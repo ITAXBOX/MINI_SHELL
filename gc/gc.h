@@ -1,8 +1,6 @@
 #ifndef GC_H
 # define GC_H
 
-# include <stdlib.h>
-
 typedef struct s_alloc
 {
 	void			*ptr;
