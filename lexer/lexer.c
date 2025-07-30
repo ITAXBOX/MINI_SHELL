@@ -17,7 +17,7 @@ static t_token *get_next_token(const char **s, t_minishell *sh)
     char			*op;
     t_token_type	type;
 
-    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>() ", **s))
+    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>", **s))
     {
         word = extract_word(s, sh);
         if (!word)
