@@ -35,3 +35,19 @@ void	gc_clear(t_gc *gc)
 		free(tmp);
 	}
 }
+
+char *gc_strdup(const char *s, t_gc *gc)
+{
+	size_t	len;
+	char	*dup;
+
+	len = 0;
+	while (s[len])
+		len++;
+	dup = gc_malloc(gc, len + 1);
+	if (!dup)
+		return (NULL);
+	ft_strncpy(dup, s, len);
+	dup[len] = '\0';
+	return (dup);
+}

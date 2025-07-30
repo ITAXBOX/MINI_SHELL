@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 static void	print_token_list(t_token *token)
