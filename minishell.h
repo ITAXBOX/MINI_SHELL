@@ -3,7 +3,6 @@
 
 /* ───── Standard Libraries ───── */
 # include <stdlib.h>
-# include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
@@ -15,8 +14,9 @@
 # include <readline/history.h>
 
 /* ───── Project Modules ───── */
-# include "lexer.h"
-# include "gc.h"
+# include "lexer/lexer.h"
+# include "gc/gc.h"
+# include "utils/utils.h"
 
 /* ───── Prompt ───── */
 # define PROMPT "minishell$ "
