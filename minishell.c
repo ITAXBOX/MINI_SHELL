@@ -27,10 +27,12 @@ int	main(void)
 		if (!sh.tokens)
 		{
 			printf("Lexer error.\n");
+			free(input);
 			continue;
 		}
 		print_token_list(sh.tokens);
 		gc_clear(&sh.gc);
+		free(input);
 	}
 	printf("Exiting minishell.\n");
 	return (0);
