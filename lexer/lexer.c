@@ -55,7 +55,10 @@ t_token	*tokenize_input(const char *input, t_minishell *sh)
             break ;
         new_token = get_next_token(&input, sh);
         if (!new_token)
-            return (NULL); // or handle error
+        {
+            printf("Syntax error: unclosed quotes or invalid token\n");
+            return (NULL);
+        }
         add_token_to_list(&head, &tail, new_token);
     }
     return (head);

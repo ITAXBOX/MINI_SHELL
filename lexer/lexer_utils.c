@@ -21,6 +21,8 @@ char	*extract_word(const char **s, t_minishell *sh)
 	const char	*start;
 	size_t		len;
 
+	if (**s == '\'' || **s == '"')
+		return (extract_quoted_word(s, sh));
 	start = *s;
 	while (**s && !ft_strchr(" \t|&<>()", **s))
 	{

@@ -20,6 +20,7 @@ UTILSDIR	= utils
 SRCS		= minishell.c \
 			  $(LEXERDIR)/lexer.c \
 			  $(LEXERDIR)/lexer_utils.c \
+			  $(LEXERDIR)/lexer_tools.c \
 			  $(GCDIR)/gc.c \
 			  $(UTILSDIR)/utils1.c
 
