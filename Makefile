@@ -27,6 +27,7 @@ SRCS		= minishell.c \
 			  $(GCDIR)/gc.c \
 			  $(UTILSDIR)/utils1.c \
 			  $(PARSERDIR)/parser.c \
+			  $(PARSERDIR)/parser_tools.c \
 			  $(DEBUGDIR)/debugging_tools.c
 
 # Object files

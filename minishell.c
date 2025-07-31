@@ -21,6 +21,7 @@ int	main(void)
 			free(input);
 			continue;
 		}
+		print_token_list(sh.tokens);
 		cmd_tree = parse_input(sh.tokens, &sh);
 		if (cmd_tree)
 			print_cmd_node(cmd_tree);
