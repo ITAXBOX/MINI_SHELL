@@ -1,14 +1,5 @@
 #include "minishell.h"
 
-static void	print_token_list(t_token *token)
-{
-	while (token)
-	{
-		printf("Token: %-10s | Type: %d\n", token->value, token->type);
-		token = token->next;
-	}
-}
-
 int	main(void)
 {
 	t_minishell	sh;
@@ -29,7 +20,9 @@ int	main(void)
 			free(input);
 			continue;
 		}
-		print_token_list(sh.tokens);
+		t_cmd_node *cmd_tree = parse_input(sh.tokens, &sh);
+		if (cmd_tree)
+			print_cmd_node(cmd_tree);
 		gc_clear(&sh.gc);
 		free(input);
 	}

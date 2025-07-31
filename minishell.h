@@ -17,6 +17,8 @@
 # include "lexer/lexer.h"
 # include "gc/gc.h"
 # include "utils/utils.h"
+# include "parser/parser.h"
+# include "debugging/debugging_tools.h"
 
 /* ───── Prompt ───── */
 # define PROMPT "minishell$ "
