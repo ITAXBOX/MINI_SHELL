@@ -26,7 +26,7 @@ static t_token *get_next_token(const char **s, t_minishell *sh)
 		(*s)++;
 		return create_token(sh, star, T_WILDCARD);
 	}
-    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>", **s))
+    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>()", **s))
     {
         word = extract_word(s, sh);
         if (!word)

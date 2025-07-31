@@ -25,7 +25,7 @@ char	*extract_word(const char **s, t_minishell *sh)
 	if (**s == '\'' || **s == '"')
 		return (extract_quoted_word(s, sh));
 	start = *s;
-	while (**s && !ft_strchr(" \t|&<>", **s))
+	while (**s && !ft_strchr(" \t|&<>()", **s))
 	{
 		if (**s == '\'' || **s == '"')
 			break ;
@@ -63,5 +63,9 @@ char	*extract_operator(const char **s, t_token_type *type, t_minishell *sh)
 		return (*type = T_REDIR_IN, set_token_and_advance(s, 1, sh));
 	if (**s == '>')
 		return (*type = T_REDIR_OUT, set_token_and_advance(s, 1, sh));
+	if (**s == '(')
+		return (*type = T_PAREN_L, set_token_and_advance(s, 1, sh));
+	if (**s == ')')
+		return (*type = T_PAREN_R, set_token_and_advance(s, 1, sh));
 	return (NULL);
 }

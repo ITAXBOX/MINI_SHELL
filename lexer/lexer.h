@@ -11,6 +11,8 @@ typedef enum e_token_type
     T_HEREDOC,
     T_AND_IF,
     T_OR_IF,
+    T_PAREN_L,
+    T_PAREN_R,
     T_WILDCARD
 }	t_token_type;
 
