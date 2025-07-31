@@ -3,6 +3,7 @@
 
 # include "minishell.h"
 
+void	print_redirs(t_redir *redir);
 void	print_token_list(t_token *token);
 void	print_cmd_node(t_cmd_node *node);
 
