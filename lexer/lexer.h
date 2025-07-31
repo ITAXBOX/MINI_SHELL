@@ -10,7 +10,8 @@ typedef enum e_token_type
     T_REDIR_APPEND,
     T_HEREDOC,
     T_AND_IF,
-    T_OR_IF
+    T_OR_IF,
+    T_WILDCARD
 }	t_token_type;
 
 typedef struct s_token
