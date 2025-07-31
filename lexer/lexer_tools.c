@@ -49,5 +49,7 @@ char	*extract_quoted_word(const char **s, t_minishell *sh)
 	word[len] = '\0';
 	if (**s == quote)
 		(*s)++;
+	if (quote == '"')
+		return (expand_variables(word, sh));
 	return (word);
 }

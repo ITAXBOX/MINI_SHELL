@@ -28,6 +28,9 @@ void	skip_whitespace(const char **s);
 char	*extract_word(const char **s, t_minishell *sh);
 char	*extract_operator(const char **s, t_token_type *type, t_minishell *sh);
 
+char	*get_var_value(const char *var, t_minishell *sh);
 char	*extract_quoted_word(const char **s, t_minishell *sh);
+
+char	*expand_variables(const char *input, t_minishell *sh);
 
 #endif

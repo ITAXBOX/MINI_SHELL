@@ -20,6 +20,7 @@ char	*extract_word(const char **s, t_minishell *sh)
 {
 	const char	*start;
 	size_t		len;
+	char		*raw;
 
 	if (**s == '\'' || **s == '"')
 		return (extract_quoted_word(s, sh));
@@ -31,7 +32,8 @@ char	*extract_word(const char **s, t_minishell *sh)
 		(*s)++;
 	}
 	len = *s - start;
-	return (copy_word(start, len, sh));
+	raw = copy_word(start, len, sh);
+	return (expand_variables(raw, sh));
 }
 
 static char	*set_token_and_advance(const char **s, int len, t_minishell *sh)

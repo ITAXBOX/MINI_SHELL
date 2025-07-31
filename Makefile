@@ -19,6 +19,7 @@ UTILSDIR	= utils
 # Source files
 SRCS		= minishell.c \
 			  $(LEXERDIR)/lexer.c \
+			  $(LEXERDIR)/expand_variables.c \
 			  $(LEXERDIR)/lexer_utils.c \
 			  $(LEXERDIR)/lexer_tools.c \
 			  $(GCDIR)/gc.c \
