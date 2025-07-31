@@ -4,7 +4,7 @@ NAME		= minishell
 # Compiler and flags
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -g3
-INCLUDES	= -I. -I./lexer -I./gc -I./utils
+INCLUDES	= -I. -I./lexer -I./gc -I./utils -I./parser -I./debugging
 
 # Readline flags
 READLINE	= -lreadline
@@ -13,8 +13,10 @@ READLINE	= -lreadline
 SRCDIR		= .
 OBJDIR		= obj
 LEXERDIR	= lexer
+PARSERDIR	= parser
 GCDIR		= gc
 UTILSDIR	= utils
+DEBUGDIR	= debugging
 
 # Source files
 SRCS		= minishell.c \
@@ -23,7 +25,9 @@ SRCS		= minishell.c \
 			  $(LEXERDIR)/lexer_utils.c \
 			  $(LEXERDIR)/lexer_tools.c \
 			  $(GCDIR)/gc.c \
-			  $(UTILSDIR)/utils1.c
+			  $(UTILSDIR)/utils1.c \
+			  $(PARSERDIR)/parser.c \
+			  $(DEBUGDIR)/debugging_tools.c
 
 # Object files
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
@@ -32,7 +36,9 @@ OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 HEADERS		= minishell.h \
 			  $(LEXERDIR)/lexer.h \
 			  $(GCDIR)/gc.h \
-			  $(UTILSDIR)/utils.h
+			  $(UTILSDIR)/utils.h \
+			  $(PARSERDIR)/parser.h \
+			  $(DEBUGDIR)/debugging_tools.h
 
 # Colors for prettier output
 RED			= \033[0;31m
