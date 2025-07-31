@@ -42,10 +42,34 @@ t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh)
 	return (node);
 }
 
+static t_cmd_node	*parse_pipeline(t_token **curr, t_minishell *sh)
+{
+	t_cmd_node	*left;
+	t_cmd_node	*right;
+	t_cmd_node	*pipe_node;
+
+	left = parse_simple_command(curr, sh);
+	if (!left)
+		return (NULL);
+	while (*curr && (*curr)->type == T_PIPE)
+	{
+		*curr = (*curr)->next;
+		right = parse_simple_command(curr, sh);
+		if (!right)
+			return (NULL);
+		pipe_node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
+		pipe_node->type = N_PIPE;
+		pipe_node->left = left;
+		pipe_node->right = right;
+		left = pipe_node;
+	}
+	return (left);
+}
+
 t_cmd_node	*parse_input(t_token *tokens, t_minishell *sh)
 {
 	t_token	*curr;
 
 	curr = tokens;
-	return (parse_simple_command(&curr, sh));
+	return (parse_pipeline(&curr, sh));
 }
