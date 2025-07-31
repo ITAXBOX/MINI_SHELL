@@ -51,9 +51,11 @@ char	*expand_variables(const char *input, t_minishell *sh)
 	char	*res;
 	size_t	i;
 	size_t	j;
+	size_t	len;
 	char	*name;
 
-	res = gc_malloc(&sh->gc, 4096);
+	len = ft_strlen(input);
+	res = gc_malloc(&sh->gc, len * 4);
 	i = 0;
 	j = 0;
 	while (input[i])
