@@ -1,8 +1,6 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-typedef struct s_minishell	t_minishell;
-
 typedef struct	s_redir
 {
 	t_token_type	type;

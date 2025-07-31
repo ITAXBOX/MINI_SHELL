@@ -29,7 +29,6 @@ typedef struct s_minishell
     t_gc		gc;
     t_token		*tokens;
     int			last_exit_status;
-    int			is_running;
 }	t_minishell;
 
 #endif
