@@ -1,5 +1,25 @@
 #include "minishell.h"
 
+t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh)
+{
+	t_cmd_node	*node;
+	t_cmd		*cmd;
+	size_t		argc;
+
+	if (!*curr || (*curr)->type != T_WORD)
+		return (NULL);
+	cmd = gc_malloc(&sh->gc, sizeof(t_cmd));
+	argc = count_args(*curr);
+	cmd->argv = gather_args(curr, argc, sh);
+	cmd->redirs = collect_redirs(curr, sh);
+	node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
+	node->type = N_SIMPLE;
+	node->cmd = cmd;
+	node->left = NULL;
+	node->right = NULL;
+	return (node);
+}
+
 t_redir	*collect_redirs(t_token **curr, t_minishell *sh)
 {
 	t_redir	*head;

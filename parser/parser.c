@@ -1,22 +1,23 @@
 #include "minishell.h"
 
-t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh)
+static t_cmd_node	*parse_pipeline_group_or_cmd(t_token **curr, t_minishell *sh)
 {
 	t_cmd_node	*node;
-	t_cmd		*cmd;
-	size_t		argc;
 
-	if (!*curr || (*curr)->type != T_WORD)
-		return (NULL);
-	cmd = gc_malloc(&sh->gc, sizeof(t_cmd));
-	argc = count_args(*curr);
-	cmd->argv = gather_args(curr, argc, sh);
-	cmd->redirs = collect_redirs(curr, sh);
-	node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
-	node->type = N_SIMPLE;
-	node->cmd = cmd;
-	node->left = NULL;
-	node->right = NULL;
+	if (*curr && (*curr)->type == T_PAREN_L)
+	{
+		*curr = (*curr)->next;
+		node = parse_logical(curr, sh);
+		if (!node || !*curr || (*curr)->type != T_PAREN_R)
+			return (NULL);
+		*curr = (*curr)->next;
+	}
+	else
+	{
+		node = parse_simple_command(curr, sh);
+		if (!node)
+			return (NULL);
+	}
 	return (node);
 }
 
@@ -26,13 +27,13 @@ static t_cmd_node	*parse_pipeline(t_token **curr, t_minishell *sh)
 	t_cmd_node	*right;
 	t_cmd_node	*pipe_node;
 
-	left = parse_simple_command(curr, sh);
+	left = parse_pipeline_group_or_cmd(curr, sh);
 	if (!left)
 		return (NULL);
 	while (*curr && (*curr)->type == T_PIPE)
 	{
 		*curr = (*curr)->next;
-		right = parse_simple_command(curr, sh);
+		right = parse_pipeline_group_or_cmd(curr, sh);
 		if (!right)
 			return (NULL);
 		pipe_node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
@@ -60,7 +61,7 @@ static t_cmd_node	*create_logic_node(t_cmd_node *left, t_cmd_node *right,
 	return (logic_node);
 }
 
-static t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh)
+t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh)
 {
 	t_cmd_node		*left;
 	t_cmd_node		*right;
