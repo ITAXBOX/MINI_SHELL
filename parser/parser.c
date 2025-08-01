@@ -66,11 +66,26 @@ static t_cmd_node	*parse_pipeline(t_token **curr, t_minishell *sh)
 	return (left);
 }
 
+static t_cmd_node	*create_logic_node(t_cmd_node *left, t_cmd_node *right,
+	t_token_type op_type, t_minishell *sh)
+{
+	t_cmd_node	*logic_node;
+
+	logic_node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
+	if (op_type == T_AND_IF)
+		logic_node->type = N_AND;
+	else
+		logic_node->type = N_OR;
+	logic_node->left = left;
+	logic_node->right = right;
+	logic_node->cmd = NULL;
+	return (logic_node);
+}
+
 static t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh)
 {
 	t_cmd_node		*left;
 	t_cmd_node		*right;
-	t_cmd_node		*logic_node;
 	t_token_type	op_type;
 
 	left = parse_pipeline(curr, sh);
@@ -83,12 +98,7 @@ static t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh)
 		right = parse_pipeline(curr, sh);
 		if (!right)
 			return (NULL);
-		logic_node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
-		logic_node->type = (op_type == T_AND_IF) ? N_AND : N_OR;
-		logic_node->left = left;
-		logic_node->right = right;
-		logic_node->cmd = NULL;
-		left = logic_node;
+		left = create_logic_node(left, right, op_type, sh);
 	}
 	return (left);
 }
