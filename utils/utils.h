@@ -8,9 +8,13 @@ void	*ft_memcpy(void *dest, const void *src, size_t n);
 size_t	ft_strlen(const char *s);
 
 int		ft_atoi(const char *str);
-char	**copy_envp(char **envp, t_gc *gc);
+char	**copy_envp(char **envp);
 int		env_find_index(char **envp, const char *key);
-void	env_set(char ***envp_ptr, const char *entry, t_gc *gc);
+void	env_set(char ***envp_ptr, const char *entry);
+
+void	free_envp(char **envp);
+char	*ft_strdup(const char *s);
+int		is_numeric(const char *str);
 
 int		validate_token_stream(t_token *token, t_minishell *sh);
 

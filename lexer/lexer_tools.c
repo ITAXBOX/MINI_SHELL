@@ -23,7 +23,7 @@ char	*get_var_value(const char *var, t_minishell *sh)
 
 	if (ft_strncmp(var, "?", 1) == 0 && var[1] == '\0')
 		return (itoa_exit_status(sh->last_exit_status, sh));
-	val = getenv(var);
+	val = env_get(var, sh->envp);
 	if (!val)
 		return (gc_strdup("", &sh->gc));
 	return (gc_strdup(val, &sh->gc));

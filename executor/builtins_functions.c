@@ -1,35 +1,18 @@
 #include "minishell.h"
 
-void	env_unset(char **envp, const char *key)
+void env_unset(char **envp, const char *key)
 {
 	int i;
 
 	i = env_find_index(envp, key);
 	if (i < 0)
 		return;
+	free(envp[i]);
 	while (envp[i])
 	{
 		envp[i] = envp[i + 1];
 		i++;
 	}
-}
-
-static int	is_numeric(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str || str[0] == '\0')
-		return (0);
-	if (str[0] == '+' || str[0] == '-')
-		i++;
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
 }
 
 int	builtin_exit(char **argv, t_minishell *sh)
@@ -66,7 +49,7 @@ int	builtin_export(char **argv, t_minishell *sh)
 	while (argv[i])
 	{
 		if (ft_strchr(argv[i], '='))
-			env_set(&sh->envp, argv[i], &sh->gc);
+			env_set(&sh->envp, argv[i]);
 		i++;
 	}
 	return (0);

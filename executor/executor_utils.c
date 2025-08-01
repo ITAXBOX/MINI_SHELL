@@ -40,7 +40,7 @@ static char	*internal_resolve_path(const char *cmd, t_minishell *sh)
 	size_t	len;
 	char	*result;
 
-	path = getenv("PATH");
+	path = env_get("PATH", sh->envp);
 	if (!path)
 		return (NULL);
 	start = path;

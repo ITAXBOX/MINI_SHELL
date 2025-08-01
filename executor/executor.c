@@ -1,5 +1,36 @@
 #include "minishell.h"
 
+char	*env_get(const char *key, char **envp)
+{
+	size_t	len;
+	int		i;
+
+	len = ft_strlen(key);
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
+int	is_builtin(const char *cmd)
+{
+	if (!cmd)
+		return (0);
+	return (
+		ft_strncmp(cmd, "echo", 4) == 0 ||
+		ft_strncmp(cmd, "cd", 2) == 0 ||
+		ft_strncmp(cmd, "pwd", 3) == 0 ||
+		ft_strncmp(cmd, "export", 6) == 0 ||
+		ft_strncmp(cmd, "unset", 5) == 0 ||
+		ft_strncmp(cmd, "env", 3) == 0 ||
+		ft_strncmp(cmd, "exit", 4) == 0
+	);
+}
+
 static void	handle_redirections(t_redir *redir_list)
 {
 	int	fd;

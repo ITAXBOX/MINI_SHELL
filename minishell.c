@@ -12,7 +12,7 @@ int	main(int argc, char **argv, char **envp)
 		sh.gc.head = NULL;
 		sh.tokens = NULL;
 		sh.last_exit_status = 0;
-		sh.envp = copy_envp(envp, &sh.gc);
+		sh.envp = copy_envp(envp);
 		while (42)
 		{
 			input = readline(PROMPT);
@@ -36,6 +36,7 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 		}
 		printf("Exiting minishell.\n");
+		free_envp(sh.envp);
 	}
 	return (0);
 }

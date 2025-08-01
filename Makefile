@@ -28,6 +28,7 @@ SRCS		= minishell.c \
 			  $(GCDIR)/gc.c \
 			  $(UTILSDIR)/utils1.c \
 			  $(UTILSDIR)/utils2.c \
+			  $(UTILSDIR)/utils3.c \
 			  $(UTILSDIR)/validation.c \
 			  $(PARSERDIR)/parser.c \
 			  $(PARSERDIR)/parser_tools.c \

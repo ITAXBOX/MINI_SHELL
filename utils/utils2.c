@@ -22,7 +22,7 @@ int	ft_atoi(const char *str)
 	return (sign * result);
 }
 
-char	**copy_envp(char **envp, t_gc *gc)
+char	**copy_envp(char **envp)
 {
 	int		i;
 	int		j;
@@ -31,11 +31,13 @@ char	**copy_envp(char **envp, t_gc *gc)
 	i = 0;
 	while (envp[i])
 		i++;
-	copy = gc_malloc(gc, sizeof(char *) * (i + 1));
+	copy = malloc(sizeof(char *) * (i + 1));
+	if (!copy)
+		return (NULL);
 	j = 0;
 	while (j < i)
 	{
-		copy[j] = gc_strdup(envp[j], gc);
+		copy[j] = ft_strdup(envp[j]);
 		j++;
 	}
 	copy[i] = NULL;
@@ -58,7 +60,7 @@ int	env_find_index(char **envp, const char *key)
 	return (-1);
 }
 
-static char	**env_add_new(char **envp, const char *entry, t_gc *gc)
+static char	**env_add_new(char **envp, const char *entry)
 {
 	int		count;
 	int		j;
@@ -67,33 +69,41 @@ static char	**env_add_new(char **envp, const char *entry, t_gc *gc)
 	count = 0;
 	while (envp[count])
 		count++;
-	new_env = gc_malloc(gc, sizeof(char *) * (count + 2));
+	new_env = malloc(sizeof(char *) * (count + 2));
+	if (!new_env)
+		return (envp);
 	j = 0;
 	while (j < count)
 	{
 		new_env[j] = envp[j];
 		j++;
 	}
-	new_env[count] = gc_strdup(entry, gc);
+	new_env[count] = ft_strdup(entry);
 	new_env[count + 1] = NULL;
 	return (new_env);
 }
 
-void	env_set(char ***envp_ptr, const char *entry, t_gc *gc)
+void env_set(char ***envp_ptr, const char *entry)
 {
 	char	**envp;
 	char	*equal;
 	int		idx;
+	char	key[256];
 
 	envp = *envp_ptr;
 	equal = ft_strchr(entry, '=');
-	if (!equal)
-		return ;
-	idx = env_find_index(envp, entry);
+	if (!equal || equal == entry)
+		return;
+	ft_strncpy(key, entry, equal - entry);
+	key[equal - entry] = '\0';
+	idx = env_find_index(envp, key);
 	if (idx >= 0)
 	{
-		envp[idx] = gc_strdup(entry, gc);
-		return ;
+		free(envp[idx]);
+		envp[idx] = ft_strdup(entry);
 	}
-	*envp_ptr = env_add_new(envp, entry, gc);
+	else
+	{
+		*envp_ptr = env_add_new(envp, entry);
+	}
 }
