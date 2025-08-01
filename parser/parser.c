@@ -66,10 +66,37 @@ static t_cmd_node	*parse_pipeline(t_token **curr, t_minishell *sh)
 	return (left);
 }
 
+static t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh)
+{
+	t_cmd_node		*left;
+	t_cmd_node		*right;
+	t_cmd_node		*logic_node;
+	t_token_type	op_type;
+
+	left = parse_pipeline(curr, sh);
+	if (!left)
+		return (NULL);
+	while (*curr && ((*curr)->type == T_AND_IF || (*curr)->type == T_OR_IF))
+	{
+		op_type = (*curr)->type;
+		*curr = (*curr)->next;
+		right = parse_pipeline(curr, sh);
+		if (!right)
+			return (NULL);
+		logic_node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
+		logic_node->type = (op_type == T_AND_IF) ? N_AND : N_OR;
+		logic_node->left = left;
+		logic_node->right = right;
+		logic_node->cmd = NULL;
+		left = logic_node;
+	}
+	return (left);
+}
+
 t_cmd_node	*parse_input(t_token *tokens, t_minishell *sh)
 {
 	t_token	*curr;
 
 	curr = tokens;
-	return (parse_pipeline(&curr, sh));
+	return (parse_logical(&curr, sh));
 }

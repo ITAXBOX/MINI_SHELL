@@ -9,27 +9,42 @@ void	print_redirs(t_redir *redir)
 	}
 }
 
-void	print_cmd_node(t_cmd_node *node)
+void	print_simple_cmd(t_cmd_node *node)
 {
 	int	i;
 
+	printf("Parsed Command:\n");
+	i = 0;
+	while (node->cmd->argv && node->cmd->argv[i])
+	{
+		printf("  argv[%d]: %s\n", i, node->cmd->argv[i]);
+		i++;
+	}
+	if (node->cmd->redirs)
+		print_redirs(node->cmd->redirs);
+}
+
+void	print_cmd_node(t_cmd_node *node)
+{
 	if (!node)
 		return ;
 	if (node->type == N_SIMPLE)
-	{
-		printf("Parsed Command:\n");
-		i = 0;
-		while (node->cmd->argv && node->cmd->argv[i])
-		{
-			printf("  argv[%d]: %s\n", i, node->cmd->argv[i]);
-			i++;
-		}
-		if (node->cmd->redirs)
-			print_redirs(node->cmd->redirs);
-	}
+		print_simple_cmd(node);
 	else if (node->type == N_PIPE)
 	{
 		printf("PIPE NODE:\n");
+		print_cmd_node(node->left);
+		print_cmd_node(node->right);
+	}
+	else if (node->type == N_AND)
+	{
+		printf("AND NODE:\n");
+		print_cmd_node(node->left);
+		print_cmd_node(node->right);
+	}
+	else if (node->type == N_OR)
+	{
+		printf("OR NODE:\n");
 		print_cmd_node(node->left);
 		print_cmd_node(node->right);
 	}
