@@ -80,6 +80,7 @@ static char	**env_add_new(char **envp, const char *entry)
 	}
 	new_env[count] = ft_strdup(entry);
 	new_env[count + 1] = NULL;
+	free(envp);
 	return (new_env);
 }
 
