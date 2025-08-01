@@ -7,4 +7,6 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 size_t	ft_strlen(const char *s);
 
+int		validate_token_stream(t_token *token, t_minishell *sh);
+
 #endif

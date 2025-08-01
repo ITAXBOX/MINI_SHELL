@@ -15,10 +15,10 @@ int	main(void)
 		if (!input)
 			break;
 		sh.tokens = tokenize_input(input, &sh);
-		if (!sh.tokens)
+		if (!sh.tokens || !validate_token_stream(sh.tokens, &sh))
 		{
-			printf("Lexer error.\n");
 			free(input);
+			gc_clear(&sh.gc);
 			continue;
 		}
 		print_token_list(sh.tokens);
