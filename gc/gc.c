@@ -51,3 +51,32 @@ char *gc_strdup(const char *s, t_gc *gc)
 	dup[len] = '\0';
 	return (dup);
 }
+
+char	*gc_strjoin(const char *s1, const char *s2, t_gc *gc)
+{
+	size_t	len1;
+	size_t	len2;
+	size_t	i;
+	size_t	j;
+	char	*res;
+
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	res = gc_malloc(gc, len1 + len2 + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < len1)
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (j < len2)
+	{
+		res[i + j] = s2[j];
+		j++;
+	}
+	res[i + j] = '\0';
+	return (res);
+}
