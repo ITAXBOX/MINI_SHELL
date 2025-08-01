@@ -8,6 +8,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n);
 size_t	ft_strlen(const char *s);
 
 int		ft_atoi(const char *str);
+char	**copy_envp(char **envp, t_gc *gc);
 
 int		validate_token_stream(t_token *token, t_minishell *sh);
 
