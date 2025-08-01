@@ -15,6 +15,7 @@ void	env_set(char ***envp_ptr, const char *entry);
 void	free_envp(char **envp);
 char	*ft_strdup(const char *s);
 int		is_numeric(const char *str);
+int		ft_strcmp(const char *s1, const char *s2);
 
 int		validate_token_stream(t_token *token, t_minishell *sh);
 
