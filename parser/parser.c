@@ -1,27 +1,5 @@
 #include "minishell.h"
 
-static t_redir	*collect_redirs(t_token **curr, t_minishell *sh)
-{
-	t_redir	*head;
-	t_redir	*tail;
-	t_redir	*new;
-
-	head = NULL;
-	tail = NULL;
-	while (*curr && ((*curr)->type >= T_REDIR_IN && (*curr)->type <= T_HEREDOC))
-	{
-		new = parse_redirection(curr, sh);
-		if (!new)
-			return (NULL);
-		if (!head)
-			head = new;
-		else
-			tail->next = new;
-		tail = new;
-	}
-	return (head);
-}
-
 t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh)
 {
 	t_cmd_node	*node;

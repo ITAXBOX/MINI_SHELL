@@ -51,6 +51,7 @@ typedef struct s_cmd_node
 t_cmd_node	*parse_input(t_token *tokens, t_minishell *sh);
 t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh);
 
+t_redir	*collect_redirs(t_token **curr, t_minishell *sh);
 t_redir	*parse_redirection(t_token **curr, t_minishell *sh);
 size_t	count_args(t_token *token);
 char	**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh);
