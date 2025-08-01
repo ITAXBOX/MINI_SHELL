@@ -14,6 +14,7 @@ SRCDIR		= .
 OBJDIR		= obj
 LEXERDIR	= lexer
 PARSERDIR	= parser
+EXECUTEDIR	= executor
 GCDIR		= gc
 UTILSDIR	= utils
 DEBUGDIR	= debugging
@@ -29,6 +30,8 @@ SRCS		= minishell.c \
 			  $(UTILSDIR)/validation.c \
 			  $(PARSERDIR)/parser.c \
 			  $(PARSERDIR)/parser_tools.c \
+			  $(EXECUTEDIR)/executor.c \
+			  $(EXECUTEDIR)/executor_utils.c \
 			  $(DEBUGDIR)/debugging_tools.c
 
 # Object files
@@ -40,6 +43,7 @@ HEADERS		= minishell.h \
 			  $(GCDIR)/gc.h \
 			  $(UTILSDIR)/utils.h \
 			  $(PARSERDIR)/parser.h \
+			  $(EXECUTEDIR)/executor.h \
 			  $(DEBUGDIR)/debugging_tools.h
 
 # Colors for prettier output

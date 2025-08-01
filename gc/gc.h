@@ -16,5 +16,6 @@ void	*gc_malloc(t_gc *gc, size_t size);
 void	gc_add(t_gc *gc, void *ptr);
 void	gc_clear(t_gc *gc);
 char	*gc_strdup(const char *s, t_gc *gc);
+char	*gc_strjoin(const char *s1, const char *s2, t_gc *gc);
 
 #endif
