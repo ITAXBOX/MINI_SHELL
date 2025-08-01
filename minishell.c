@@ -1,11 +1,12 @@
 #include "minishell.h"
 
-int	main(int argc, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	sh;
 	char		*input;
 	t_cmd_node	*cmd_tree;
 
+	(void)argv;
 	if (argc == 1)
 	{
 		sh.gc.head = NULL;
