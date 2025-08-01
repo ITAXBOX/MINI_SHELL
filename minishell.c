@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	sh;
 	char		*input;
@@ -9,6 +9,7 @@ int	main(void)
 	sh.gc.head = NULL;
 	sh.tokens = NULL;
 	sh.last_exit_status = 0;
+	sh.envp = envp;
 	while (42)
 	{
 		input = readline(PROMPT);
