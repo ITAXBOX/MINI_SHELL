@@ -35,6 +35,8 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	int		status;
 	char	*full_path;
 
+	if (is_builtin(cmd->argv[0]))
+		return run_builtin(cmd, sh);
 	full_path = resolve_command_path(cmd->argv[0], sh);
 	if (!full_path)
 	{

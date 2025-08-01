@@ -9,6 +9,8 @@ size_t	ft_strlen(const char *s);
 
 int		ft_atoi(const char *str);
 char	**copy_envp(char **envp, t_gc *gc);
+int		env_find_index(char **envp, const char *key);
+void	env_set(char ***envp_ptr, const char *entry, t_gc *gc);
 
 int		validate_token_stream(t_token *token, t_minishell *sh);
 

@@ -33,6 +33,8 @@ SRCS		= minishell.c \
 			  $(PARSERDIR)/parser_tools.c \
 			  $(EXECUTEDIR)/executor.c \
 			  $(EXECUTEDIR)/executor_utils.c \
+			  $(EXECUTEDIR)/builtins.c \
+			  $(EXECUTEDIR)/builtins_functions.c \
 			  $(DEBUGDIR)/debugging_tools.c
 
 # Object files
