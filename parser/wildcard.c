@@ -16,7 +16,7 @@ char	**resize_argv(char **old_argv, size_t old_size
 	return (new_argv);
 }
 
-static int	match_pattern(const char *pattern, const char *text)
+int	match_pattern(const char *pattern, const char *text)
 {
 	while (*pattern)
 	{
@@ -45,7 +45,7 @@ static int	match_pattern(const char *pattern, const char *text)
 	return (*text == '\0');
 }
 
-static char	**copy_match_list(char **old, int old_size, int new_cap, t_gc *gc)
+char	**copy_match_list(char **old, int old_size, int new_cap, t_gc *gc)
 {
 	char	**new_list;
 	int		i;
@@ -63,31 +63,15 @@ static char	**copy_match_list(char **old, int old_size, int new_cap, t_gc *gc)
 
 static char	**collect_matches(const char *pattern, t_gc *gc, int *out_count)
 {
-	DIR				*dir;
-	struct dirent	*entry;
-	char			**matches;
-	int				count;
-	int				capacity;
+	DIR		*dir;
+	char	**matches;
 
 	dir = opendir(".");
 	if (!dir)
 		return (NULL);
-	capacity = 16;
-	matches = gc_malloc(gc, sizeof(char *) * (capacity + 1));
-	count = 0;
-	while ((entry = readdir(dir)))
-	{
-		if (entry->d_name[0] == '.' || !match_pattern(pattern, entry->d_name))
-			continue ;
-		if (count >= capacity)
-		{
-			capacity *= 2;
-			matches = copy_match_list(matches, count, capacity, gc);
-		}
-		matches[count++] = gc_strdup(entry->d_name, gc);
-	}
+	matches = read_and_collect_matches(dir, pattern, gc, out_count);
 	closedir(dir);
-	return (matches[count] = NULL, *out_count = count, matches);
+	return (matches);
 }
 
 char	**expand_wildcard(const char *pattern, t_gc *gc)
