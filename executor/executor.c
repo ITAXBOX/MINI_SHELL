@@ -91,11 +91,27 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 
 int	execute_tree(t_cmd_node *node, t_minishell *sh)
 {
+	int	left_status;
+
 	if (!node)
 		return (1);
 	if (node->type == N_SIMPLE)
 		return execute_simple(node->cmd, sh);
 	if (node->type == N_PIPE)
 		return execute_pipe(node, sh);
+	else if (node->type == N_AND)
+	{
+		left_status = execute_tree(node->left, sh);
+		if (left_status == 0)
+			return execute_tree(node->right, sh);
+		return left_status;
+	}
+	else if (node->type == N_OR)
+	{
+		left_status = execute_tree(node->left, sh);
+		if (left_status != 0)
+			return execute_tree(node->right, sh);
+		return left_status;
+	}
 	return (1);
 }
