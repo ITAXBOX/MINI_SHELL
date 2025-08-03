@@ -95,5 +95,7 @@ int	execute_tree(t_cmd_node *node, t_minishell *sh)
 		return (1);
 	if (node->type == N_SIMPLE)
 		return execute_simple(node->cmd, sh);
+	if (node->type == N_PIPE)
+		return execute_pipe(node, sh);
 	return (1);
 }
