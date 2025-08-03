@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+size_t	count_args(t_token *token)
+{
+	size_t	count;
+
+	count = 0;
+	while (token && token->type == T_WORD)
+	{
+		count++;
+		token = token->next;
+	}
+	return (count);
+}
+
 void	free_envp(char **envp)
 {
 	int	i;
