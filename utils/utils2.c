@@ -28,6 +28,13 @@ char	**copy_envp(char **envp)
 	int		j;
 	char	**copy;
 
+	if (ft_strcmp(envp[0], "./minishell") == 0 && envp[1] == NULL)
+	{
+		copy = malloc(sizeof(char *) * 1);
+		if (!copy)
+			return (NULL);
+		return (copy[0] = NULL, copy);
+	}
 	i = 0;
 	while (envp[i])
 		i++;
