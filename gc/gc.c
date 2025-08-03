@@ -36,7 +36,7 @@ void	gc_clear(t_gc *gc)
 	}
 }
 
-char *gc_strdup(const char *s, t_gc *gc)
+char	*gc_strdup(const char *s, t_gc *gc)
 {
 	size_t	len;
 	char	*dup;
