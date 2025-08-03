@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void env_unset(char **envp, const char *key)
+static void env_unset(char **envp, const char *key)
 {
 	int i;
 
@@ -15,7 +15,7 @@ void env_unset(char **envp, const char *key)
 	}
 }
 
-int	builtin_exit(char **argv, t_minishell *sh)
+static int	builtin_exit(char **argv, t_minishell *sh)
 {
 	int	exit_code;
 
@@ -41,7 +41,7 @@ int	builtin_exit(char **argv, t_minishell *sh)
 	exit(exit_code);
 }
 
-int	builtin_export(char **argv, t_minishell *sh)
+static int	builtin_export(char **argv, t_minishell *sh)
 {
 	int	i;
 
@@ -55,7 +55,7 @@ int	builtin_export(char **argv, t_minishell *sh)
 	return (0);
 }
 
-int	builtin_unset(char **argv, t_minishell *sh)
+static int	builtin_unset(char **argv, t_minishell *sh)
 {
 	int	i;
 

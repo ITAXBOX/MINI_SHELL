@@ -16,7 +16,7 @@ char	*env_get(const char *key, char **envp)
 	return (NULL);
 }
 
-int	is_builtin(const char *cmd)
+static int	is_builtin(const char *cmd)
 {
 	if (!cmd)
 		return (0);
