@@ -13,6 +13,6 @@ int		builtin_echo(char **argv);
 int		builtin_pwd(void);
 int		builtin_env(t_minishell *sh);
 
-int 	execute_pipe(t_cmd_node *node, t_minishell *sh);
+int		execute_pipe(t_cmd_node *node, t_minishell *sh);
 
 #endif

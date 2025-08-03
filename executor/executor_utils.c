@@ -1,6 +1,7 @@
 #include "minishell.h"
 
-static char	*join_path_and_cmd(const char *dir, const char *cmd, t_minishell *sh)
+static char	*join_path_and_cmd(const char *dir
+	, const char *cmd, t_minishell *sh)
 {
 	char	*with_slash;
 	char	*full;
@@ -10,7 +11,8 @@ static char	*join_path_and_cmd(const char *dir, const char *cmd, t_minishell *sh
 	return (full);
 }
 
-static char	*try_path_dir(const char *start, size_t len, const char *cmd, t_minishell *sh)
+static char	*try_path_dir(const char *start
+	, size_t len, const char *cmd, t_minishell *sh)
 {
 	char	*dir;
 	char	*full;
@@ -23,6 +25,7 @@ static char	*try_path_dir(const char *start, size_t len, const char *cmd, t_mini
 		return (full);
 	return (NULL);
 }
+
 static size_t	get_path_segment_len(const char *start)
 {
 	char	*end;

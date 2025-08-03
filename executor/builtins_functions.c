@@ -1,12 +1,12 @@
 #include "minishell.h"
 
-static void env_unset(char **envp, const char *key)
+static void	env_unset(char **envp, const char *key)
 {
-	int i;
+	int	i;
 
 	i = env_find_index(envp, key);
 	if (i < 0)
-		return;
+		return ;
 	free(envp[i]);
 	while (envp[i])
 	{
