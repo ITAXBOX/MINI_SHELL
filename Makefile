@@ -32,6 +32,7 @@ SRCS		= minishell.c \
 			  $(UTILSDIR)/validation_sort.c \
 			  $(PARSERDIR)/parser.c \
 			  $(PARSERDIR)/parser_tools.c \
+			  $(PARSERDIR)/parse_simple.c \
 			  $(PARSERDIR)/wildcard.c \
 			  $(EXECUTEDIR)/executor.c \
 			  $(EXECUTEDIR)/executor_pipe.c \
