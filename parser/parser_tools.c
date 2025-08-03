@@ -1,6 +1,7 @@
 #include "minishell.h"
 
-static char	**resize_if_needed(char **argv, size_t *i, size_t *capacity, t_minishell *sh)
+static char	**resize_if_needed(char **argv, size_t *i
+		, size_t *capacity, t_minishell *sh)
 {
 	if (*i >= *capacity)
 	{
@@ -10,7 +11,8 @@ static char	**resize_if_needed(char **argv, size_t *i, size_t *capacity, t_minis
 	return (argv);
 }
 
-static char	**add_expanded_args(char **argv, char **expanded, t_gather_data *data)
+static char	**add_expanded_args(char **argv, char **expanded
+		, t_gather_data *data)
 {
 	size_t	k;
 

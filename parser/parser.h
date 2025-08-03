@@ -7,7 +7,7 @@
 //   { type: T_REDIR_OUT, file: "out.txt" },
 //   { type: T_REDIR_IN,  file: "in.txt"  }
 // ]
-typedef struct	s_redir
+typedef struct s_redir
 {
 	t_token_type	type;
 	char			*file;
@@ -18,13 +18,13 @@ typedef struct	s_redir
 // example: ls -l > out.txt
 // argv = ["ls", "-l", NULL]
 // redirs = [ {type: T_REDIR_OUT, file: "out.txt"} ]
-typedef struct	s_cmd
+typedef struct s_cmd
 {
 	char	**argv;
 	t_redir	*redirs;
 }	t_cmd;
 
-typedef enum	e_node_type
+typedef enum e_node_type
 {
 	N_SIMPLE,
 	N_PIPE,
@@ -49,10 +49,11 @@ typedef struct s_cmd_node
 }	t_cmd_node;
 
 // Data structure to hold gathered arguments and shell context
-typedef struct	s_gather_data {
-    size_t		capacity;
-    size_t		i;
-    t_minishell	*sh;
+typedef struct s_gather_data
+{
+	size_t		capacity;
+	size_t		i;
+	t_minishell	*sh;
 }	t_gather_data;
 
 t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh);
@@ -62,7 +63,8 @@ t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh);
 
 char		**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh);
 
-char		**resize_argv(char **old_argv, size_t old_size, size_t new_capacity, t_minishell *sh);
+char		**resize_argv(char **old_argv, size_t old_size,
+				size_t new_capacity, t_minishell *sh);
 char		**expand_wildcard(const char *pattern, t_gc *gc);
 
 #endif

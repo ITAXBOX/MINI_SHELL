@@ -1,6 +1,7 @@
 #include "minishell.h"
 
-char	**resize_argv(char **old_argv, size_t old_size, size_t new_capacity, t_minishell *sh)
+char	**resize_argv(char **old_argv, size_t old_size
+		, size_t new_capacity, t_minishell *sh)
 {
 	char	**new_argv;
 	size_t	i;
@@ -77,7 +78,7 @@ static char	**collect_matches(const char *pattern, t_gc *gc, int *out_count)
 	while ((entry = readdir(dir)))
 	{
 		if (entry->d_name[0] == '.' || !match_pattern(pattern, entry->d_name))
-			continue;
+			continue ;
 		if (count >= capacity)
 		{
 			capacity *= 2;

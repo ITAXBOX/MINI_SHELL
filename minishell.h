@@ -29,10 +29,10 @@
 /* ───── Minishell Context Struct ───── */
 typedef struct s_minishell
 {
-    t_gc		gc;
-    t_token		*tokens;
-    int			last_exit_status;
-    char		**envp;
+	t_gc		gc;
+	t_token		*tokens;
+	int			last_exit_status;
+	char		**envp;
 }	t_minishell;
 
 #endif

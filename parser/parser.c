@@ -1,6 +1,7 @@
 #include "minishell.h"
 
-static t_cmd_node	*parse_pipeline_group_or_cmd(t_token **curr, t_minishell *sh)
+static t_cmd_node	*parse_pipeline_group_or_cmd(t_token **curr
+		, t_minishell *sh)
 {
 	t_cmd_node	*node;
 
