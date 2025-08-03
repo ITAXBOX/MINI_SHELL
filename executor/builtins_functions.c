@@ -46,6 +46,11 @@ static int	builtin_export(char **argv, t_minishell *sh)
 	int	i;
 
 	i = 1;
+	if (!argv[1])
+	{
+		print_sorted_env_export(sh->envp, &sh->gc);
+		return (0);
+	}
 	while (argv[i])
 	{
 		if (ft_strchr(argv[i], '='))

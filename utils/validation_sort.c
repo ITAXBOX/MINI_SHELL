@@ -1,5 +1,70 @@
 #include "minishell.h"
 
+static void	bubble_sort_env(char **sorted, int count)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = 0;
+	while (i < count - 1)
+	{
+		j = i + 1;
+		while (j < count)
+		{
+			if (ft_strcmp(sorted[i], sorted[j]) > 0)
+			{
+				tmp = sorted[i];
+				sorted[i] = sorted[j];
+				sorted[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+static void	print_env_variable(char *env_var)
+{
+	char	*eq;
+
+	eq = ft_strchr(env_var, '=');
+	if (eq)
+	{
+		*eq = '\0';
+		printf("declare -x %s=\"%s\"\n", env_var, eq + 1);
+		*eq = '=';
+	}
+	else
+		printf("declare -x %s\n", env_var);
+}
+
+void	print_sorted_env_export(char **envp, t_gc *gc)
+{
+	int		count;
+	int		i;
+	char	**sorted;
+
+	count = 0;
+	while (envp[count])
+		count++;
+	sorted = gc_malloc(gc, sizeof(char *) * (count + 1));
+	i = 0;
+	while (i < count)
+	{
+		sorted[i] = envp[i];
+		i++;
+	}
+	sorted[count] = NULL;
+	bubble_sort_env(sorted, count);
+	i = 0;
+	while (i < count)
+	{
+		print_env_variable(sorted[i]);
+		i++;
+	}
+}
+
 static int	check_syntax_errors(t_token *token, t_token *prev, int *paren_count, t_minishell *sh)
 {
 	if ((token->type == T_AND_IF || token->type == T_OR_IF || token->type == T_PIPE)
