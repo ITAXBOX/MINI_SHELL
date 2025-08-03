@@ -91,7 +91,7 @@ static char	**env_add_new(char **envp, const char *entry)
 	return (new_env);
 }
 
-void env_set(char ***envp_ptr, const char *entry)
+void	env_set(char ***envp_ptr, const char *entry)
 {
 	char	**envp;
 	char	*equal;
@@ -101,7 +101,7 @@ void env_set(char ***envp_ptr, const char *entry)
 	envp = *envp_ptr;
 	equal = ft_strchr(entry, '=');
 	if (!equal || equal == entry)
-		return;
+		return ;
 	ft_strncpy(key, entry, equal - entry);
 	key[equal - entry] = '\0';
 	idx = env_find_index(envp, key);

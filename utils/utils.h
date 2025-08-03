@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-typedef struct	s_redir t_redir;
+typedef struct s_redir	t_redir;
 
 char	*ft_strchr(const char *s, int c);
 char	*ft_strncpy(char *dest, const char *src, unsigned int n);
