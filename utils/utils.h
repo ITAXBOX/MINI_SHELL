@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 # define UTILS_H
 
+typedef struct	s_redir t_redir;
+
 char	*ft_strchr(const char *s, int c);
 char	*ft_strncpy(char *dest, const char *src, unsigned int n);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -12,6 +14,7 @@ char	**copy_envp(char **envp);
 int		env_find_index(char **envp, const char *key);
 void	env_set(char ***envp_ptr, const char *entry);
 
+size_t	count_args(t_token *token);
 void	free_envp(char **envp);
 char	*ft_strdup(const char *s);
 int		is_numeric(const char *str);

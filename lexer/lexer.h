@@ -12,8 +12,7 @@ typedef enum e_token_type
     T_AND_IF,
     T_OR_IF,
     T_PAREN_L,
-    T_PAREN_R,
-    T_WILDCARD
+    T_PAREN_R
 }	t_token_type;
 
 typedef struct s_token

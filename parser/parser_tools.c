@@ -1,88 +1,56 @@
 #include "minishell.h"
 
-t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh)
+static char	**resize_if_needed(char **argv, size_t *i, size_t *capacity, t_minishell *sh)
 {
-	t_cmd_node	*node;
-	t_cmd		*cmd;
-	size_t		argc;
-
-	if (!*curr || (*curr)->type != T_WORD)
-		return (NULL);
-	cmd = gc_malloc(&sh->gc, sizeof(t_cmd));
-	argc = count_args(*curr);
-	cmd->argv = gather_args(curr, argc, sh);
-	cmd->redirs = collect_redirs(curr, sh);
-	node = gc_malloc(&sh->gc, sizeof(t_cmd_node));
-	node->type = N_SIMPLE;
-	node->cmd = cmd;
-	node->left = NULL;
-	node->right = NULL;
-	return (node);
-}
-
-t_redir	*collect_redirs(t_token **curr, t_minishell *sh)
-{
-	t_redir	*head;
-	t_redir	*tail;
-	t_redir	*new;
-
-	head = NULL;
-	tail = NULL;
-	while (*curr && ((*curr)->type >= T_REDIR_IN && (*curr)->type <= T_HEREDOC))
+	if (*i >= *capacity)
 	{
-		new = parse_redirection(curr, sh);
-		if (!new)
-			return (NULL);
-		if (!head)
-			head = new;
-		else
-			tail->next = new;
-		tail = new;
+		*capacity *= 2;
+		argv = resize_argv(argv, *i, *capacity, sh);
 	}
-	return (head);
+	return (argv);
 }
 
-t_redir	*parse_redirection(t_token **curr, t_minishell *sh)
+static char	**add_expanded_args(char **argv, char **expanded, t_gather_data *data)
 {
-	t_redir	*redir;
+	size_t	k;
 
-	if (!*curr || (*curr)->type < T_REDIR_IN || (*curr)->type > T_HEREDOC)
-		return (NULL);
-	if (!(*curr)->next || (*curr)->next->type != T_WORD)
-		return (NULL);
-	redir = gc_malloc(&sh->gc, sizeof(t_redir));
-	redir->type = (*curr)->type;
-	redir->file = (*curr)->next->value;
-	redir->next = NULL;
-	*curr = (*curr)->next->next;
-	return (redir);
-}
-
-size_t	count_args(t_token *token)
-{
-	size_t	count;
-
-	count = 0;
-	while (token && token->type == T_WORD)
+	k = 0;
+	while (expanded[k])
 	{
-		count++;
-		token = token->next;
+		argv = resize_if_needed(argv, &data->i, &data->capacity, data->sh);
+		argv[data->i++] = expanded[k++];
 	}
-	return (count);
+	return (argv);
+}
+
+static char	**add_single_arg(char **argv, char *value, t_gather_data *data)
+{
+	argv = resize_if_needed(argv, &data->i, &data->capacity, data->sh);
+	argv[data->i++] = value;
+	return (argv);
 }
 
 char	**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh)
 {
-	char	**argv;
-	size_t	i;
+	char			**argv;
+	char			**expanded;
+	t_gather_data	data;
 
-	argv = gc_malloc(&sh->gc, sizeof(char *) * (argc + 1));
-	i = 0;
-	while (*token_ptr && (*token_ptr)->type == T_WORD && i < argc)
+	data.capacity = argc * 16;
+	data.i = 0;
+	data.sh = sh;
+	argv = gc_malloc(&sh->gc, sizeof(char *) * (data.capacity + 1));
+	while (*token_ptr && (*token_ptr)->type == T_WORD)
 	{
-		argv[i++] = (*token_ptr)->value;
+		expanded = NULL;
+		if (ft_strchr((*token_ptr)->value, '*'))
+			expanded = expand_wildcard((*token_ptr)->value, &sh->gc);
+		if (expanded)
+			argv = add_expanded_args(argv, expanded, &data);
+		else
+			argv = add_single_arg(argv, (*token_ptr)->value, &data);
 		*token_ptr = (*token_ptr)->next;
 	}
-	argv[i] = NULL;
+	argv[data.i] = NULL;
 	return (argv);
 }

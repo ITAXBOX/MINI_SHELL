@@ -48,13 +48,21 @@ typedef struct s_cmd_node
 	t_cmd				*cmd;
 }	t_cmd_node;
 
+// Data structure to hold gathered arguments and shell context
+typedef struct	s_gather_data {
+    size_t		capacity;
+    size_t		i;
+    t_minishell	*sh;
+}	t_gather_data;
+
 t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh);
 t_cmd_node	*parse_input(t_token *tokens, t_minishell *sh);
 
 t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh);
-t_redir	*collect_redirs(t_token **curr, t_minishell *sh);
-t_redir	*parse_redirection(t_token **curr, t_minishell *sh);
-size_t	count_args(t_token *token);
-char	**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh);
+
+char		**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh);
+
+char		**resize_argv(char **old_argv, size_t old_size, size_t new_capacity, t_minishell *sh);
+char		**expand_wildcard(const char *pattern, t_gc *gc);
 
 #endif

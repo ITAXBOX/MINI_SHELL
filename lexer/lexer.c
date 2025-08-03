@@ -11,22 +11,13 @@ static t_token	*create_token(t_minishell *sh, char *val, t_token_type type)
 	return (tok);
 }
 
-static t_token *get_next_token(const char **s, t_minishell *sh)
+static t_token	*get_next_token(const char **s, t_minishell *sh)
 {
     char			*word;
-	char			*star;
     char			*op;
     t_token_type	type;
 
-	if (**s == '*')
-	{
-		star = gc_malloc(&sh->gc, 2);
-		star[0] = '*';
-		star[1] = '\0';
-		(*s)++;
-		return create_token(sh, star, T_WILDCARD);
-	}
-    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>()", **s))
+    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>() \t", **s))
     {
         word = extract_word(s, sh);
         if (!word)
