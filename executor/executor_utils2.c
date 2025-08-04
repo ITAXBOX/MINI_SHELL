@@ -30,7 +30,7 @@ int	handle_heredoc(const char *delimiter)
 	{
 		line = readline("> ");
 		if (!line || ft_strcmp(line, delimiter) == 0)
-			break;
+			break ;
 		write(pipefd[1], line, ft_strlen(line));
 		write(pipefd[1], "\n", 1);
 		free(line);
