@@ -5,7 +5,6 @@ int		run_builtin(t_cmd *cmd, t_minishell *sh);
 
 char	*resolve_command_path(const char *cmd, t_minishell *sh);
 
-char	*env_get(const char *key, char **envp);
 int		execute_tree(t_cmd_node *node, t_minishell *sh);
 
 int		builtin_cd(char **argv, t_minishell *sh);
@@ -13,6 +12,8 @@ int		builtin_echo(char **argv);
 int		builtin_pwd(void);
 int		builtin_env(t_minishell *sh);
 
+char	*env_get(const char *key, char **envp);
+int		handle_heredoc(const char *delimiter);
 int		execute_pipe(t_cmd_node *node, t_minishell *sh);
 
 #endif
