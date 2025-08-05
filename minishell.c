@@ -9,6 +9,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (argc == 1)
 	{
+		setup_signal_handlers();
 		sh.gc.head = NULL;
 		sh.tokens = NULL;
 		sh.last_exit_status = 0;
@@ -27,11 +28,11 @@ int	main(int argc, char **argv, char **envp)
 				gc_clear(&sh.gc);
 				continue;
 			}
-			print_token_list(sh.tokens);
+			// print_token_list(sh.tokens);
 			cmd_tree = parse_input(sh.tokens, &sh);
 			if (cmd_tree)
 			{
-				print_cmd_node(cmd_tree);
+				// print_cmd_node(cmd_tree);
 				sh.last_exit_status = execute_tree(cmd_tree, &sh);
 			}
 			gc_clear(&sh.gc);

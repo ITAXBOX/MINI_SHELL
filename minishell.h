@@ -22,6 +22,7 @@
 # include "parser/parser.h"
 # include "debugging/debugging_tools.h"
 # include "executor/executor.h"
+# include "signals/signals.h"
 
 /* ───── Constants ───── */
 # define PROMPT "minishell$ "
