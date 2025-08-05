@@ -1,39 +1,77 @@
 #include "minishell.h"
 
-void	skip_whitespace(const char **s)
+static char	*append_string(char *dest, const char *src, t_minishell *sh)
 {
-	while (**s == ' ' || **s == '\t')
-		(*s)++;
+	char	*result;
+	size_t	dest_len;
+	size_t	src_len;
+	size_t	i;
+	size_t	j;
+
+	if (!dest)
+		return (gc_strdup(src, &sh->gc));
+	if (!src)
+		return (dest);
+	dest_len = ft_strlen(dest);
+	src_len = ft_strlen(src);
+	result = gc_malloc(&sh->gc, dest_len + src_len + 1);
+	i = -1;
+	while (++i < dest_len)
+		result[i] = dest[i];
+	j = 0;
+	while (j < src_len)
+	{
+		result[i + j] = src[j];
+		j++;
+	}
+	result[i + j] = '\0';
+	return (result);
 }
 
-static char	*copy_word(const char *start, size_t len, t_minishell *sh)
+static char	*process_unquoted_part(const char **s, t_minishell *sh)
 {
-	char	*word;
+	const char	*start;
+	char		*part;
+	size_t		len;
 
-	word = gc_malloc(&sh->gc, len + 1);
-	ft_strncpy(word, start, len);
-	word[len] = '\0';
-	return (word);
+	start = *s;
+	while (**s && !ft_strchr(" \t|&<>()\'\"", **s))
+		(*s)++;
+	len = *s - start;
+	if (len > 0)
+	{
+		part = copy_word(start, len, sh);
+		part = expand_variables(part, sh);
+		return (part);
+	}
+	return (NULL);
 }
 
 char	*extract_word(const char **s, t_minishell *sh)
 {
-	const char	*start;
-	size_t		len;
-	char		*raw;
+	char		*result;
+	char		*part;
 
-	if (**s == '\'' || **s == '"')
-		return (extract_quoted_word(s, sh));
-	start = *s;
+	result = NULL;
 	while (**s && !ft_strchr(" \t|&<>()", **s))
 	{
 		if (**s == '\'' || **s == '"')
-			break ;
-		(*s)++;
+		{
+			part = extract_quoted_word(s, sh);
+			if (!part)
+				return (NULL);
+			result = append_string(result, part, sh);
+		}
+		else
+		{
+			part = process_unquoted_part(s, sh);
+			if (part)
+				result = append_string(result, part, sh);
+		}
 	}
-	len = *s - start;
-	raw = copy_word(start, len, sh);
-	return (expand_variables(raw, sh));
+	if (!result)
+		result = gc_strdup("", &sh->gc);
+	return (result);
 }
 
 static char	*set_token_and_advance(const char **s, int len, t_minishell *sh)
