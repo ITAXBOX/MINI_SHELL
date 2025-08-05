@@ -34,6 +34,7 @@ typedef struct s_minishell
 	t_token		*tokens;
 	int			last_exit_status;
 	char		**envp;
+	int			in_logical_or_pipe;
 }	t_minishell;
 
 #endif

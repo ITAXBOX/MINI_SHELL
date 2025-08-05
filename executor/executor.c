@@ -42,7 +42,7 @@ static void	handle_redirections(t_redir *redir_list)
 	}
 }
 
-static int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
+int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 {
 	pid_t	pid;
 	int		status;
@@ -70,14 +70,11 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	char	*full_path;
 
 	if (is_builtin(cmd->argv[0]))
-		return (fork_and_execute_builtin(cmd, sh));
+		return (execute_builtin_dispatch(cmd, sh));
 	full_path = resolve_command_path(cmd->argv[0], sh);
 	if (!full_path)
-	{
-		write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
-		write(2, ": command not found\n", 21);
-		return (127);
-	}
+		return (write(2, cmd->argv[0], ft_strlen(cmd->argv[0]))
+			, write(2, ": command not found\n", 21), 127);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -101,11 +98,12 @@ int	execute_tree(t_cmd_node *node, t_minishell *sh)
 	if (!node)
 		return (1);
 	if (node->type == N_SIMPLE)
-		return (execute_simple(node->cmd, sh));
+		return (sh->in_logical_or_pipe = 0, execute_simple(node->cmd, sh));
 	if (node->type == N_PIPE)
-		return (execute_pipe(node, sh));
+		return (sh->in_logical_or_pipe = 1, execute_pipe(node, sh));
 	else if (node->type == N_AND)
 	{
+		sh->in_logical_or_pipe = 1;
 		left_status = execute_tree(node->left, sh);
 		if (left_status == 0)
 			return (execute_tree(node->right, sh));
@@ -113,6 +111,7 @@ int	execute_tree(t_cmd_node *node, t_minishell *sh)
 	}
 	else if (node->type == N_OR)
 	{
+		sh->in_logical_or_pipe = 1;
 		left_status = execute_tree(node->left, sh);
 		if (left_status != 0)
 			return (execute_tree(node->right, sh));

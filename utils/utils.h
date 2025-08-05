@@ -2,6 +2,7 @@
 # define UTILS_H
 
 typedef struct s_redir	t_redir;
+typedef struct s_cmd	t_cmd;
 
 char	*ft_strchr(const char *s, int c);
 char	*ft_strncpy(char *dest, const char *src, unsigned int n);
@@ -30,6 +31,7 @@ int		match_pattern(const char *pattern, const char *text);
 void	syntax_error(const char *token, t_minishell *sh);
 int		is_valid_identifier(const char *s);
 
+int		execute_builtin_dispatch(t_cmd *cmd, t_minishell *sh);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 

@@ -13,6 +13,7 @@ int	main(int argc, char **argv, char **envp)
 		sh.gc.head = NULL;
 		sh.tokens = NULL;
 		sh.last_exit_status = 0;
+		sh.in_logical_or_pipe = 0;
 		sh.envp = copy_envp(envp);
 		while (42)
 		{
