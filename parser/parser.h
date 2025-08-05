@@ -59,16 +59,10 @@ typedef struct s_gather_data
 t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh);
 t_cmd_node	*parse_input(t_token *tokens, t_minishell *sh);
 
-char		**read_and_collect_matches(DIR *dir, const char *pattern,
-				t_gc *gc, int *out_count);
 t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh);
 
 char		**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh);
 
-char		**resize_argv(char **old_argv, size_t old_size,
-				size_t new_capacity, t_minishell *sh);
-int			match_pattern(const char *pattern, const char *text);
-char		**copy_match_list(char **old, int old_size, int new_cap, t_gc *gc);
 char		**expand_wildcard(const char *pattern, t_gc *gc);
 
 #endif

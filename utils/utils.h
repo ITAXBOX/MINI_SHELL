@@ -23,4 +23,8 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	print_sorted_env_export(char **envp, t_gc *gc);
 int		validate_token_stream(t_token *token, t_minishell *sh);
 
+char	**resize_argv(char **old_argv, size_t old_size,
+				size_t new_capacity, t_minishell *sh);
+int		match_pattern(const char *pattern, const char *text);
+
 #endif
