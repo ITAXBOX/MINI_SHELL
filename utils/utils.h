@@ -25,7 +25,7 @@ int		validate_token_stream(t_token *token, t_minishell *sh);
 
 int		is_only_whitespace(const char *s);
 char	**resize_argv(char **old_argv, size_t old_size,
-				size_t new_capacity, t_minishell *sh);
+			size_t new_capacity, t_minishell *sh);
 int		match_pattern(const char *pattern, const char *text);
 
 #endif
