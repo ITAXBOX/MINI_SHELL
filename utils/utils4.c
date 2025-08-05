@@ -61,3 +61,19 @@ void	syntax_error(const char *token, t_minishell *sh)
 	write(2, "'\n", 2);
 	sh->last_exit_status = 2;
 }
+
+int	is_valid_identifier(const char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s || !(ft_isalpha(s[0]) || s[0] == '_'))
+		return (0);
+	while (s[i] && s[i] != '=')
+	{
+		if (!ft_isalnum(s[i]) && s[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}

@@ -28,5 +28,9 @@ char	**resize_argv(char **old_argv, size_t old_size,
 			size_t new_capacity, t_minishell *sh);
 int		match_pattern(const char *pattern, const char *text);
 void	syntax_error(const char *token, t_minishell *sh);
+int		is_valid_identifier(const char *s);
+
+int		ft_isalpha(int c);
+int		ft_isalnum(int c);
 
 #endif
