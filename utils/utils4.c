@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+int	is_only_whitespace(const char *s)
+{
+	const char	*p;
+
+	p = s;
+	skip_whitespace(&p);
+	return (*p == '\0');
+}
+
 char	**resize_argv(char **old_argv, size_t old_size
 		, size_t new_capacity, t_minishell *sh)
 {

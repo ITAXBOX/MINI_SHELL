@@ -18,6 +18,8 @@ int	main(int argc, char **argv, char **envp)
 			input = readline(PROMPT);
 			if (!input)
 				break;
+			if (*input && !is_only_whitespace(input))
+				add_history(input);
 			sh.tokens = tokenize_input(input, &sh);
 			if (!sh.tokens || !validate_token_stream(sh.tokens, &sh))
 			{
@@ -37,6 +39,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		printf("Exiting minishell.\n");
 		free_envp(sh.envp);
+		rl_clear_history();
 	}
 	return (0);
 }
