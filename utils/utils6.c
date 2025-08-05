@@ -62,3 +62,13 @@ void	skip_whitespace(const char **s)
 	while (**s == ' ' || **s == '\t')
 		(*s)++;
 }
+
+char	*copy_word(const char *start, size_t len, t_minishell *sh)
+{
+	char	*word;
+
+	word = gc_malloc(&sh->gc, len + 1);
+	ft_strncpy(word, start, len);
+	word[len] = '\0';
+	return (word);
+}

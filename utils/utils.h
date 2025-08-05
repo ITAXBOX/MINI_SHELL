@@ -36,5 +36,6 @@ int		ft_isalnum(int c);
 
 int		is_numeric(const char *str);
 void	skip_whitespace(const char **s);
+char	*copy_word(const char *start, size_t len, t_minishell *sh);
 
 #endif

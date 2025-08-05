@@ -26,7 +26,6 @@ typedef struct s_minishell	t_minishell;
 
 t_token	*tokenize_input(const char *input, t_minishell *sh);
 
-void	skip_whitespace(const char **s);
 char	*extract_word(const char **s, t_minishell *sh);
 char	*extract_operator(const char **s, t_token_type *type, t_minishell *sh);
 
