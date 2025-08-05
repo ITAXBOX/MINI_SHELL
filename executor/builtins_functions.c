@@ -44,7 +44,9 @@ static int	builtin_exit(char **argv, t_minishell *sh)
 static int	builtin_export(char **argv, t_minishell *sh)
 {
 	int	i;
+	int	has_error;
 
+	has_error = 0;
 	i = 1;
 	if (!argv[1])
 	{
@@ -53,11 +55,18 @@ static int	builtin_export(char **argv, t_minishell *sh)
 	}
 	while (argv[i])
 	{
-		if (ft_strchr(argv[i], '='))
+		if (!is_valid_identifier(argv[i]))
+		{
+			write(2, "export: `", 9);
+			write(2, argv[i], ft_strlen(argv[i]));
+			write(2, "': not a valid identifier\n", 26);
+			has_error = 1;
+		}
+		else if (ft_strchr(argv[i], '='))
 			env_set(&sh->envp, argv[i]);
 		i++;
 	}
-	return (0);
+	return (has_error);
 }
 
 static int	builtin_unset(char **argv, t_minishell *sh)
