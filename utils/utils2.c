@@ -24,28 +24,23 @@ int	ft_atoi(const char *str)
 
 char	**copy_envp(char **envp)
 {
+	int		count;
 	int		i;
-	int		j;
 	char	**copy;
 
-	if (ft_strcmp(envp[0], "./minishell") == 0 && envp[1] == NULL)
-	{
-		copy = malloc(sizeof(char *) * 1);
-		if (!copy)
-			return (NULL);
-		return (copy[0] = NULL, copy);
-	}
+	count = 0;
 	i = 0;
-	while (envp[i])
-		i++;
-	copy = malloc(sizeof(char *) * (i + 1));
+	if (!envp)
+		return (NULL);
+	while (envp[count])
+		count++;
+	copy = malloc(sizeof(char *) * (count + 1));
 	if (!copy)
 		return (NULL);
-	j = 0;
-	while (j < i)
+	while (i < count)
 	{
-		copy[j] = ft_strdup(envp[j]);
-		j++;
+		copy[i] = ft_strdup(envp[i]);
+		i++;
 	}
 	copy[i] = NULL;
 	return (copy);
