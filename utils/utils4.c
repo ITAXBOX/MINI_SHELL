@@ -56,8 +56,8 @@ int	match_pattern(const char *pattern, const char *text)
 
 void	syntax_error(const char *token, t_minishell *sh)
 {
-	write(2, "bash: syntax error near unexpected token `", 43);
-	write(2, token, strlen(token));
+	write(2, "minishell: syntax error near unexpected token `", 48);
+	write(2, token, ft_strlen(token));
 	write(2, "'\n", 2);
 	sh->last_exit_status = 2;
 }
