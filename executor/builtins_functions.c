@@ -25,7 +25,7 @@ static int	builtin_exit(char **argv, t_minishell *sh)
 		if (!is_numeric(argv[1]))
 		{
 			write(2, "minishell: exit: numeric argument required\n", 43);
-			exit(255);
+			exit(2);
 		}
 		if (argv[2])
 		{
