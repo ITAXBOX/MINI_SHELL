@@ -50,24 +50,6 @@ char	*ft_strdup(const char *s)
 	return (dup);
 }
 
-int	is_numeric(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str || str[0] == '\0')
-		return (0);
-	if (str[0] == '+' || str[0] == '-')
-		i++;
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;

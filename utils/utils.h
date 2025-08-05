@@ -18,7 +18,6 @@ void	env_set(char ***envp_ptr, const char *entry);
 size_t	count_args(t_token *token);
 void	free_envp(char **envp);
 char	*ft_strdup(const char *s);
-int		is_numeric(const char *str);
 int		ft_strcmp(const char *s1, const char *s2);
 
 void	print_sorted_env_export(char **envp, t_gc *gc);
@@ -34,5 +33,7 @@ int		is_valid_identifier(const char *s);
 int		execute_builtin_dispatch(t_cmd *cmd, t_minishell *sh);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
+
+int		is_numeric(const char *str);
 
 #endif
