@@ -35,5 +35,6 @@ int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 
 int		is_numeric(const char *str);
+void	skip_whitespace(const char **s);
 
 #endif

@@ -56,3 +56,9 @@ int	is_numeric(const char *str)
 	}
 	return (1);
 }
+
+void	skip_whitespace(const char **s)
+{
+	while (**s == ' ' || **s == '\t')
+		(*s)++;
+}
