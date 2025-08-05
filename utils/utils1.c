@@ -23,17 +23,25 @@ char	*ft_strchr(const char *s, int c)
 char	*ft_strncpy(char *dest, const char *src, unsigned int n)
 {
 	unsigned int	i;
+	unsigned int	j;
 
 	i = 0;
+	j = 0;
 	while (i < n && src[i] != '\0')
 	{
-		dest[i] = src[i];
+		if (src[i] == '\\')
+		{
+			i++;
+			continue;
+		}
+		dest[j] = src[i];
 		i++;
+		j++;
 	}
-	while (i < n)
+	while (j < n)
 	{
-		dest[i] = '\0';
-		i++;
+		dest[j] = '\0';
+		j++;
 	}
 	return (dest);
 }

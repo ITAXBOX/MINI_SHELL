@@ -40,7 +40,12 @@ char	*extract_quoted_word(const char **s, t_minishell *sh)
 	(*s)++;
 	start = *s;
 	while (**s && **s != quote)
-		(*s)++;
+	{
+		if (**s == '\\')
+			*s +=2;
+		else
+			(*s)++;
+	}
 	if (**s != quote)
 		return (NULL);
 	len = *s - start;
