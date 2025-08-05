@@ -38,9 +38,8 @@ static char	*process_unquoted_part(const char **s, t_minishell *sh)
 	while (**s && !ft_strchr(" \t|&<>()\'\"", **s))
 	{
 		if (**s == '\\')
-			*s += 2;
-		else
 			(*s)++;
+		(*s)++;
 	}
 	len = *s - start;
 	if (len > 0)

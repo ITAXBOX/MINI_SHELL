@@ -42,9 +42,8 @@ char	*extract_quoted_word(const char **s, t_minishell *sh)
 	while (**s && **s != quote)
 	{
 		if (**s == '\\')
-			*s +=2;
-		else
 			(*s)++;
+		(*s)++;
 	}
 	if (**s != quote)
 		return (NULL);
