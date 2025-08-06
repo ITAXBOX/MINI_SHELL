@@ -3,7 +3,12 @@
 int	builtin_cd(char **argv, t_minishell *sh)
 {
 	const char	*path;
+	char		*current_dir;
+	char		*new_dir;
 
+	current_dir = getcwd(NULL, 0);
+	if (!current_dir)
+		return (perror("cd: getcwd"), 1);
 	path = argv[1];
 	if (!path)
 	{
@@ -12,10 +17,14 @@ int	builtin_cd(char **argv, t_minishell *sh)
 			path = "/";
 	}
 	if (chdir(path) != 0)
-	{
-		perror("cd");
-		return (1);
-	}
+		return (perror("cd: chdir"), 1);
+	new_dir = getcwd(NULL, 0);
+	if (!new_dir)
+		return (perror("cd: getcwd"), 1);
+	env_set(&sh->envp, gc_strjoin("OLDPWD=", current_dir, &sh->gc));
+	env_set(&sh->envp, gc_strjoin("PWD=", new_dir, &sh->gc));
+	free(current_dir);
+	free(new_dir);
 	return (0);
 }
 
@@ -35,10 +44,11 @@ static int	is_dash_n(const char *arg)
 	return (1);
 }
 
-int	builtin_echo(char **argv)
+int	builtin_echo(char **argv, t_minishell *sh)
 {
-	int	i;
-	int	newline;
+	int		i;
+	int		newline;
+	char	*expanded;
 
 	i = 1;
 	newline = 1;
@@ -49,7 +59,8 @@ int	builtin_echo(char **argv)
 	}
 	while (argv[i])
 	{
-		printf("%s", argv[i]);
+		expanded = expand_variables(argv[i], sh);
+		printf("%s", expanded);
 		if (argv[i + 1])
 			printf(" ");
 		i++;
