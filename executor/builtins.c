@@ -59,10 +59,17 @@ int	builtin_echo(char **argv)
 	return (0);
 }
 
-int	builtin_pwd(void)
+int	builtin_pwd(char **argv)
 {
 	char	*cwd;
 
+	if (argv[1])
+	{
+		write(2, "pwd: ", 5);
+		write(2, argv[1], ft_strlen(argv[1]));
+		write(2, ": command not found\n", 20);
+		return (127);
+	}
 	cwd = getcwd(NULL, 0);
 	if (cwd)
 	{

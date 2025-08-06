@@ -87,7 +87,7 @@ int	run_builtin(t_cmd *cmd, t_minishell *sh)
 	if (ft_strcmp(cmd->argv[0], "echo") == 0)
 		return (builtin_echo(cmd->argv));
 	else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
-		return (builtin_pwd());
+		return (builtin_pwd(cmd->argv));
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
 		return (builtin_env(sh));
 	else if (ft_strcmp(cmd->argv[0], "cd") == 0)
