@@ -32,7 +32,7 @@ char	*ft_strncpy(char *dest, const char *src, unsigned int n)
 		if (src[i] == '\\')
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		dest[j] = src[i];
 		i++;
