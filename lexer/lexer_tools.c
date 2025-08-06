@@ -4,9 +4,19 @@ static char	*itoa_exit_status(int status, t_minishell *sh)
 {
 	char	buf[12];
 	int		i;
+	int		is_negative;
+	int		j;
 
-	i = 10;
-	buf[11] = '\0';
+	i = 11;
+	j = 0;
+	while (j < 12)
+		buf[j++] = '\0';
+	is_negative = 0;
+	if (status < 0)
+	{
+		is_negative = 1;
+		status = -status;
+	}
 	if (status == 0)
 		buf[--i] = '0';
 	while (status > 0)
@@ -14,6 +24,8 @@ static char	*itoa_exit_status(int status, t_minishell *sh)
 		buf[--i] = '0' + (status % 10);
 		status /= 10;
 	}
+	if (is_negative)
+		buf[--i] = '-';
 	return (gc_strdup(&buf[i], &sh->gc));
 }
 
