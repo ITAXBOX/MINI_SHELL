@@ -16,6 +16,7 @@ int	main(int argc, char **argv, char **envp)
 		sh.last_exit_status = 0;
 		sh.in_logical_or_pipe = 0;
 		sh.envp = copy_envp(envp);
+		increment_shlvl(&sh, &sh.envp);
 		while (42)
 		{
 			input = readline(PROMPT);

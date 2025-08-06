@@ -38,4 +38,7 @@ int		is_numeric(const char *str);
 void	skip_whitespace(const char **s);
 char	*copy_word(const char *start, size_t len, t_minishell *sh);
 
+char	*ft_itoa(int n, t_minishell *sh);
+void	increment_shlvl(t_minishell *sh, char ***envp);
+
 #endif

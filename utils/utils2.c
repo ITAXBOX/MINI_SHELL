@@ -106,7 +106,5 @@ void	env_set(char ***envp_ptr, const char *entry)
 		envp[idx] = ft_strdup(entry);
 	}
 	else
-	{
 		*envp_ptr = env_add_new(envp, entry);
-	}
 }
