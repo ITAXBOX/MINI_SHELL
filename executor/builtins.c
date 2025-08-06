@@ -61,13 +61,20 @@ int	builtin_echo(char **argv)
 
 int	builtin_pwd(void)
 {
-	char	cwd[1024];
+	char	*cwd;
 
-	if (getcwd(cwd, sizeof(cwd)))
+	cwd = getcwd(NULL, 0);
+	if (cwd)
+	{
 		printf("%s\n", cwd);
+		free(cwd);
+		return (0);
+	}
 	else
+	{
 		perror("pwd");
-	return (0);
+		return (1);
+	}
 }
 
 int	builtin_env(t_minishell *sh)
