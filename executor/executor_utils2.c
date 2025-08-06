@@ -77,8 +77,10 @@ int	execute_pipe(t_cmd_node *node, t_minishell *sh)
 		setup_right_child(pipefd, node, sh);
 	close(pipefd[0]);
 	close(pipefd[1]);
+	g_in_prompt = 0;
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, &status, 0);
+	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);

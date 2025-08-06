@@ -55,7 +55,9 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 		handle_redirections(cmd->redirs);
 		exit(run_builtin(cmd, sh));
 	}
+	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
+	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
@@ -85,7 +87,9 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 		perror("execve");
 		exit(127);
 	}
+	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
+	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);

@@ -9,6 +9,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (argc == 1)
 	{
+		g_in_prompt = 1;
 		setup_signal_handlers();
 		sh.gc.head = NULL;
 		sh.tokens = NULL;
