@@ -4,6 +4,7 @@ NAME		= minishell
 # Compiler and flags
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -g3
+DEBUG_FLAGS	= -DDEBUG_MODE=1
 INCLUDES	= -I. -I./lexer -I./gc -I./utils -I./parser -I./debugging -I./executor -I./signal
 
 # Readline flags
@@ -73,6 +74,9 @@ RESET		= \033[0m
 # Rules
 all: $(NAME)
 
+debug: CFLAGS += $(DEBUG_FLAGS)
+debug: $(NAME)
+
 $(NAME): $(OBJS)
 	@echo "$(YELLOW)Linking $(NAME)...$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(READLINE)
@@ -99,4 +103,6 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+debug_re: fclean debug
+
+.PHONY: all debug clean fclean re debug_re

@@ -27,6 +27,9 @@
 
 /* ───── Constants ───── */
 # define PROMPT "minishell$ "
+# ifndef DEBUG_MODE
+#  define DEBUG_MODE 0
+# endif
 
 /* ───── Global Variable ───── */
 extern volatile sig_atomic_t	g_in_prompt;
