@@ -42,8 +42,7 @@ int	handle_heredoc(const char *delimiter)
 
 static int	setup_left_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	reset_signal_handlers();
 	close(pipefd[0]);
 	dup2(pipefd[1], STDOUT_FILENO);
 	close(pipefd[1]);
@@ -52,8 +51,7 @@ static int	setup_left_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 
 static int	setup_right_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	reset_signal_handlers();
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);

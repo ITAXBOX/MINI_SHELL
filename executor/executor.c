@@ -50,8 +50,7 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 	pid = fork();
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
+		reset_signal_handlers();
 		handle_redirections(cmd->redirs);
 		exit(run_builtin(cmd, sh));
 	}
@@ -80,8 +79,7 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	pid = fork();
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
+		reset_signal_handlers();
 		handle_redirections(cmd->redirs);
 		execve(full_path, cmd->argv, sh->envp);
 		perror("execve");

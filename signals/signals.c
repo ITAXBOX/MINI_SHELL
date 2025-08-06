@@ -18,3 +18,9 @@ void	setup_signal_handlers(void)
 	signal(SIGINT, sigint_handler_prompt);
 	signal(SIGQUIT, SIG_IGN);
 }
+
+void	reset_signal_handlers(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
