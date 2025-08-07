@@ -51,14 +51,9 @@ Minishell is a comprehensive shell implementation that replicates the core funct
 
 ---
 
-## 🎨 **Visual Showcase**
-
-### 🖥️ **Interactive Shell Interface**
-![Minishell Interface](images/minishell.png)
-*Clean, intuitive command-line interface with full bash compatibility*
-
 ### 🔍 **Debug Mode Capabilities**
 ![Debug Mode](images/minishell_debug_mode.png)
+
 *Advanced debugging features showing tokenization, parsing, and execution flow*
 
 ---
