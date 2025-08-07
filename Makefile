@@ -45,6 +45,7 @@ SRCS		= minishell.c \
 			  $(EXECUTEDIR)/executor_utils.c \
 			  $(EXECUTEDIR)/builtins.c \
 			  $(EXECUTEDIR)/builtins_functions.c \
+			  $(EXECUTEDIR)/builtin_cd.c \
 			  $(DEBUGDIR)/debugging_tools.c \
 			  $(SIGNDIR)/signals.c
 

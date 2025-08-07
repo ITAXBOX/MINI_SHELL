@@ -1,33 +1,5 @@
 #include "minishell.h"
 
-int	builtin_cd(char **argv, t_minishell *sh)
-{
-	const char	*path;
-	char		*current_dir;
-	char		*new_dir;
-
-	current_dir = getcwd(NULL, 0);
-	if (!current_dir)
-		return (perror("cd: getcwd"), 1);
-	path = argv[1];
-	if (!path)
-	{
-		path = env_get("HOME", sh->envp);
-		if (!path)
-			path = "/";
-	}
-	if (chdir(path) != 0)
-		return (perror("cd: chdir"), 1);
-	new_dir = getcwd(NULL, 0);
-	if (!new_dir)
-		return (perror("cd: getcwd"), 1);
-	env_set(&sh->envp, gc_strjoin("OLDPWD=", current_dir, &sh->gc));
-	env_set(&sh->envp, gc_strjoin("PWD=", new_dir, &sh->gc));
-	free(current_dir);
-	free(new_dir);
-	return (0);
-}
-
 static int	is_dash_n(const char *arg)
 {
 	int	i;
