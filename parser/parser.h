@@ -59,10 +59,16 @@ typedef struct s_gather_data
 t_cmd_node	*parse_logical(t_token **curr, t_minishell *sh);
 t_cmd_node	*parse_input(t_token *tokens, t_minishell *sh);
 
+void		add_redir_to_list(t_redir **head, t_redir **tail, t_redir *new);
 t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh);
 
-char		**gather_args(t_token **token_ptr, size_t argc, t_minishell *sh);
+char		**gather_args_and_redirs(t_token **token_ptr, t_minishell *sh,
+				t_redir **redir_head);
+
+char		**add_expanded_args(char **argv, char **expanded,
+				t_gather_data *data);
+char		**resize_if_needed(char **argv, size_t *i,
+				size_t *capacity, t_minishell *sh);
 
 char		**expand_wildcard(const char *pattern, t_gc *gc);
-
 #endif
