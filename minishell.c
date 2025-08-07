@@ -23,12 +23,12 @@ static void	run_shell_loop(t_minishell *sh, char *input)
 		return ;
 	}
 	if (DEBUG_MODE)
-		print_token_list(sh->tokens);
+		debug_print_tokens(sh->tokens);
 	cmd_tree = parse_input(sh->tokens, sh);
 	if (cmd_tree)
 	{
 		if (DEBUG_MODE)
-			print_cmd_node(cmd_tree);
+			debug_print_ast(cmd_tree);
 		sh->last_exit_status = execute_tree(cmd_tree, sh);
 	}
 	gc_clear(&sh->gc);

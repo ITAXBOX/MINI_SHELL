@@ -3,8 +3,10 @@
 
 # include "minishell.h"
 
-void	print_redirs(t_redir *redir);
-void	print_token_list(t_token *token);
-void	print_cmd_node(t_cmd_node *node);
+/* Enhanced debug visualizations */
+void	debug_print_ast(t_cmd_node *node);
+void	debug_print_tokens(t_token *token);
+
+void	print_ast_tree(t_cmd_node *node, int depth, int is_last);
 
 #endif
