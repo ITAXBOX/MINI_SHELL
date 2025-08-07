@@ -48,20 +48,29 @@ static void	append_var_value(char *name, char *res, size_t *j, t_minishell *sh)
 		res[(*j)++] = val[k++];
 }
 
-static size_t	calculate_needed_size(const char *input)
+static size_t	calculate_needed_size(const char *input, t_minishell *sh)
 {
 	size_t	needed_size;
 	size_t	i;
+	char	*name;
+	char	*val;
 
-	needed_size = ft_strlen(input) * 2;
+	needed_size = ft_strlen(input);
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '$')
-			needed_size += 2048;
-		i++;
+		if (input[i] == '$' && input[i + 1] && is_var_char(input[i + 1], 1))
+		{
+			i++;
+			name = extract_var_name(input, &i, sh);
+			val = get_var_value(name, sh);
+			if (val)
+				needed_size += ft_strlen(val);
+		}
+		else
+			i++;
 	}
-	return (needed_size);
+	return (needed_size + 1);
 }
 
 char	*expand_variables(const char *input, t_minishell *sh)
@@ -73,7 +82,7 @@ char	*expand_variables(const char *input, t_minishell *sh)
 
 	if (!input)
 		return (gc_strdup("", &sh->gc));
-	res = gc_malloc(&sh->gc, calculate_needed_size(input));
+	res = gc_malloc(&sh->gc, calculate_needed_size(input, sh));
 	if (!res)
 		return (gc_strdup("", &sh->gc));
 	i = 0;
