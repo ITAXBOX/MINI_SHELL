@@ -42,8 +42,9 @@ SRCS		= minishell.c \
 			  $(PARSERDIR)/parse_simple.c \
 			  $(PARSERDIR)/wildcard.c \
 			  $(EXECUTEDIR)/executor.c \
-			  $(EXECUTEDIR)/executor_utils2.c \
 			  $(EXECUTEDIR)/executor_utils.c \
+			  $(EXECUTEDIR)/executor_utils2.c \
+			  $(EXECUTEDIR)/executor_utils3.c \
 			  $(EXECUTEDIR)/builtins.c \
 			  $(EXECUTEDIR)/builtins_functions.c \
 			  $(EXECUTEDIR)/builtin_cd.c \

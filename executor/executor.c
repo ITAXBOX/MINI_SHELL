@@ -17,7 +17,6 @@ static void	handle_redirections(t_redir *redir_list)
 {
 	int	fd;
 
-	fd = -1;
 	while (redir_list)
 	{
 		if (redir_list->type == T_REDIR_IN)
@@ -27,7 +26,7 @@ static void	handle_redirections(t_redir *redir_list)
 		else if (redir_list->type == T_REDIR_APPEND)
 			fd = open(redir_list->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (redir_list->type == T_HEREDOC)
-			fd = handle_heredoc(redir_list->file);
+			fd = redir_list->heredoc_fd;
 		if (fd < 0)
 		{
 			perror(redir_list->file);

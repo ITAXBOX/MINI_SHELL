@@ -16,30 +16,6 @@ char	*env_get(const char *key, char **envp)
 	return (NULL);
 }
 
-int	handle_heredoc(const char *delimiter)
-{
-	int		pipefd[2];
-	char	*line;
-
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		exit(1);
-	}
-	while (1)
-	{
-		line = readline("> ");
-		if (!line || ft_strcmp(line, delimiter) == 0)
-			break ;
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
-		free(line);
-	}
-	free(line);
-	close(pipefd[1]);
-	return (pipefd[0]);
-}
-
 static int	setup_left_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
 	reset_signal_handlers();

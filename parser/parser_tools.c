@@ -15,7 +15,16 @@ static t_redir	*create_redirection(t_token **token_ptr, t_minishell *sh)
 		return (NULL);
 	redir = gc_malloc(&sh->gc, sizeof(t_redir));
 	redir->type = (*token_ptr)->type;
-	redir->file = (*token_ptr)->next->value;
+	if ((*token_ptr)->type == T_HEREDOC)
+	{
+		redir->file = (*token_ptr)->next->value;
+		redir->heredoc_fd = handle_heredoc(redir->file, sh, 1);
+	}
+	else
+	{
+		redir->file = (*token_ptr)->next->value;
+		redir->heredoc_fd = -1;
+	}
 	redir->next = NULL;
 	*token_ptr = (*token_ptr)->next->next;
 	return (redir);
