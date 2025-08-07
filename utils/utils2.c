@@ -91,14 +91,19 @@ void	env_set(char ***envp_ptr, const char *entry)
 	char	**envp;
 	char	*equal;
 	int		idx;
-	char	key[256];
+	char	*key;
+	size_t	key_len;
 
 	envp = *envp_ptr;
 	equal = ft_strchr(entry, '=');
 	if (!equal || equal == entry)
 		return ;
-	ft_strncpy(key, entry, equal - entry);
-	key[equal - entry] = '\0';
+	key_len = equal - entry;
+	key = malloc(key_len + 1);
+	if (!key)
+		return ;
+	ft_strncpy(key, entry, key_len);
+	key[key_len] = '\0';
 	idx = env_find_index(envp, key);
 	if (idx >= 0)
 	{
@@ -107,4 +112,5 @@ void	env_set(char ***envp_ptr, const char *entry)
 	}
 	else
 		*envp_ptr = env_add_new(envp, entry);
+	free(key);
 }
