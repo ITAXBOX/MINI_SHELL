@@ -71,6 +71,8 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	int		status;
 	char	*full_path;
 
+	if (is_expandable_command(cmd->argv[0]))
+		return (execute_expanded_command(cmd->argv[0], sh));
 	if (is_builtin(cmd->argv[0]))
 		return (execute_builtin_dispatch(cmd, sh));
 	full_path = resolve_command_path(cmd->argv[0], sh);

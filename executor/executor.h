@@ -14,6 +14,8 @@ int		builtin_pwd(char **argv);
 int		builtin_env(t_minishell *sh);
 
 char	*env_get(const char *key, char **envp);
+int		is_expandable_command(const char *cmd);
+int		execute_expanded_command(const char *cmd_str, t_minishell *sh);	
 int		handle_signal_termination(int status);
 int		handle_heredoc(const char *delimiter, t_minishell *sh, int expand_vars);
 int		execute_pipe(t_cmd_node *node, t_minishell *sh);
