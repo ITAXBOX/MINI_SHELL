@@ -9,6 +9,7 @@ static void	init_shell(t_minishell *sh, char **envp)
 	sh->in_logical_or_pipe = 0;
 	sh->envp = copy_envp(envp, &sh->env_gc);
 	increment_shlvl(sh, &sh->envp);
+	init_default_env_vars(sh, &sh->envp);
 }
 
 static void	run_shell_loop(t_minishell *sh, char *input)

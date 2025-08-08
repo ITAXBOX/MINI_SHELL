@@ -78,6 +78,35 @@ void	increment_shlvl(t_minishell *sh, char ***envp)
 	env_set(envp, shlvl_entry, &sh->env_gc);
 }
 
+void	init_default_env_vars(t_minishell *sh, char ***envp)
+{
+	char	*pwd_val;
+	char	*underscore_val;
+	char	*current_dir;
+	char	*pwd_entry;
+	char	*underscore_entry;
+
+	pwd_val = env_get("PWD", *envp);
+	if (!pwd_val)
+	{
+		current_dir = getcwd(NULL, 0);
+		if (current_dir)
+		{
+			pwd_entry = gc_strjoin("PWD=", current_dir, &sh->gc);
+			if (pwd_entry)
+				env_set(envp, pwd_entry, &sh->env_gc);
+			free(current_dir);
+		}
+	}
+	underscore_val = env_get("_", *envp);
+	if (!underscore_val)
+	{
+		underscore_entry = gc_strdup("_=/usr/bin/env", &sh->gc);
+		if (underscore_entry)
+			env_set(envp, underscore_entry, &sh->env_gc);
+	}
+}
+
 int	is_builtin(const char *cmd)
 {
 	if (!cmd)

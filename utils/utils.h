@@ -40,6 +40,7 @@ char	*copy_word(const char *start, size_t len, t_minishell *sh);
 
 char	*ft_itoa(int n, t_minishell *sh);
 void	increment_shlvl(t_minishell *sh, char ***envp);
+void	init_default_env_vars(t_minishell *sh, char ***envp);
 int		is_builtin(const char *cmd);
 
 #endif
