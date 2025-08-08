@@ -9,7 +9,7 @@ int		fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh);
 int		execute_tree(t_cmd_node *node, t_minishell *sh);
 
 int		builtin_cd(char **argv, t_minishell *sh);
-int		builtin_echo(char **argv, t_minishell *sh);
+int		builtin_echo(char **argv);
 int		builtin_pwd(char **argv);
 int		builtin_env(t_minishell *sh);
 

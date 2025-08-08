@@ -16,11 +16,10 @@ static int	is_dash_n(const char *arg)
 	return (1);
 }
 
-int	builtin_echo(char **argv, t_minishell *sh)
+int	builtin_echo(char **argv)
 {
 	int		i;
 	int		newline;
-	char	*expanded;
 
 	i = 1;
 	newline = 1;
@@ -31,8 +30,7 @@ int	builtin_echo(char **argv, t_minishell *sh)
 	}
 	while (argv[i])
 	{
-		expanded = expand_variables(argv[i], sh);
-		printf("%s", expanded);
+		printf("%s", argv[i]);
 		if (argv[i + 1])
 			printf(" ");
 		i++;
