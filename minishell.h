@@ -38,6 +38,7 @@ extern volatile sig_atomic_t	g_in_prompt;
 typedef struct s_minishell
 {
 	t_gc		gc;
+	t_gc		env_gc;
 	t_token		*tokens;
 	int			last_exit_status;
 	char		**envp;

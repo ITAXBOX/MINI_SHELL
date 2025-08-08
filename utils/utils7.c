@@ -75,5 +75,18 @@ void	increment_shlvl(t_minishell *sh, char ***envp)
 	shlvl_entry = gc_strjoin("SHLVL=", new_val, &sh->gc);
 	if (!shlvl_entry)
 		return ;
-	env_set(envp, shlvl_entry);
+	env_set(envp, shlvl_entry, &sh->env_gc);
+}
+
+int	is_builtin(const char *cmd)
+{
+	if (!cmd)
+		return (0);
+	return (ft_strcmp(cmd, "echo") == 0
+		|| ft_strcmp(cmd, "cd") == 0
+		|| ft_strcmp(cmd, "pwd") == 0
+		|| ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "unset") == 0
+		|| ft_strcmp(cmd, "env") == 0
+		|| ft_strcmp(cmd, "exit") == 0);
 }

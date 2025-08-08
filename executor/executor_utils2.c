@@ -18,20 +18,30 @@ char	*env_get(const char *key, char **envp)
 
 static int	setup_left_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
+	int	exit_code;
+
 	reset_signal_handlers();
 	close(pipefd[0]);
 	dup2(pipefd[1], STDOUT_FILENO);
 	close(pipefd[1]);
-	exit(execute_tree(node->left, sh));
+	exit_code = execute_tree(node->left, sh);
+	gc_clear(&sh->gc);
+	gc_clear(&sh->env_gc);
+	exit(exit_code);
 }
 
 static int	setup_right_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
+	int	exit_code;
+
 	reset_signal_handlers();
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
-	exit(execute_tree(node->right, sh));
+	exit_code = execute_tree(node->right, sh);
+	gc_clear(&sh->gc);
+	gc_clear(&sh->env_gc);
+	exit(exit_code);
 }
 
 int	execute_pipe(t_cmd_node *node, t_minishell *sh)

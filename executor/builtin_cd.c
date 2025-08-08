@@ -47,8 +47,9 @@ static int	update_pwd_vars(char *current_dir, t_minishell *sh)
 		free(current_dir);
 		return (perror("cd: getcwd"), 1);
 	}
-	env_set(&sh->envp, gc_strjoin("OLDPWD=", current_dir, &sh->gc));
-	env_set(&sh->envp, gc_strjoin("PWD=", new_dir, &sh->gc));
+	env_set(&sh->envp, gc_strjoin("OLDPWD=", current_dir, &sh->gc),
+		&sh->env_gc);
+	env_set(&sh->envp, gc_strjoin("PWD=", new_dir, &sh->gc), &sh->env_gc);
 	free(current_dir);
 	free(new_dir);
 	return (0);

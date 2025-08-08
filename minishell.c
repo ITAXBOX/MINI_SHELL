@@ -3,10 +3,11 @@
 static void	init_shell(t_minishell *sh, char **envp)
 {
 	sh->gc.head = NULL;
+	sh->env_gc.head = NULL;
 	sh->tokens = NULL;
 	sh->last_exit_status = 0;
 	sh->in_logical_or_pipe = 0;
-	sh->envp = copy_envp(envp);
+	sh->envp = copy_envp(envp, &sh->env_gc);
 	increment_shlvl(sh, &sh->envp);
 }
 
@@ -54,7 +55,7 @@ int	main(int argc, char **argv, char **envp)
 		free(input);
 	}
 	printf("Exiting minishell.\n");
-	free_envp(sh.envp);
+	gc_clear(&sh.env_gc);
 	rl_clear_history();
 	return (0);
 }

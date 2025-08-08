@@ -22,7 +22,7 @@ int	ft_atoi(const char *str)
 	return (sign * result);
 }
 
-char	**copy_envp(char **envp)
+char	**copy_envp(char **envp, t_gc *env_gc)
 {
 	int		count;
 	int		i;
@@ -34,12 +34,12 @@ char	**copy_envp(char **envp)
 		return (NULL);
 	while (envp[count])
 		count++;
-	copy = malloc(sizeof(char *) * (count + 1));
+	copy = gc_malloc(env_gc, sizeof(char *) * (count + 1));
 	if (!copy)
 		return (NULL);
 	while (i < count)
 	{
-		copy[i] = ft_strdup(envp[i]);
+		copy[i] = gc_strdup(envp[i], env_gc);
 		i++;
 	}
 	copy[i] = NULL;
@@ -62,7 +62,7 @@ int	env_find_index(char **envp, const char *key)
 	return (-1);
 }
 
-static char	**env_add_new(char **envp, const char *entry)
+static char	**env_add_new(char **envp, const char *entry, t_gc *env_gc)
 {
 	int		count;
 	int		j;
@@ -71,7 +71,7 @@ static char	**env_add_new(char **envp, const char *entry)
 	count = 0;
 	while (envp[count])
 		count++;
-	new_env = malloc(sizeof(char *) * (count + 2));
+	new_env = gc_malloc(env_gc, sizeof(char *) * (count + 2));
 	if (!new_env)
 		return (envp);
 	j = 0;
@@ -80,13 +80,12 @@ static char	**env_add_new(char **envp, const char *entry)
 		new_env[j] = envp[j];
 		j++;
 	}
-	new_env[count] = ft_strdup(entry);
+	new_env[count] = gc_strdup(entry, env_gc);
 	new_env[count + 1] = NULL;
-	free(envp);
 	return (new_env);
 }
 
-void	env_set(char ***envp_ptr, const char *entry)
+void	env_set(char ***envp_ptr, const char *entry, t_gc *env_gc)
 {
 	char	**envp;
 	char	*equal;
@@ -99,7 +98,7 @@ void	env_set(char ***envp_ptr, const char *entry)
 	if (!equal || equal == entry)
 		return ;
 	key_len = equal - entry;
-	key = malloc(key_len + 1);
+	key = gc_malloc(env_gc, key_len + 1);
 	if (!key)
 		return ;
 	ft_strncpy(key, entry, key_len);
@@ -107,10 +106,8 @@ void	env_set(char ***envp_ptr, const char *entry)
 	idx = env_find_index(envp, key);
 	if (idx >= 0)
 	{
-		free(envp[idx]);
-		envp[idx] = ft_strdup(entry);
+		envp[idx] = gc_strdup(entry, env_gc);
 	}
 	else
-		*envp_ptr = env_add_new(envp, entry);
-	free(key);
+		*envp_ptr = env_add_new(envp, entry, env_gc);
 }

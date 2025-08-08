@@ -1,18 +1,5 @@
 #include "minishell.h"
 
-static int	is_builtin(const char *cmd)
-{
-	if (!cmd)
-		return (0);
-	return (ft_strcmp(cmd, "echo") == 0
-		|| ft_strcmp(cmd, "cd") == 0
-		|| ft_strcmp(cmd, "pwd") == 0
-		|| ft_strcmp(cmd, "export") == 0
-		|| ft_strcmp(cmd, "unset") == 0
-		|| ft_strcmp(cmd, "env") == 0
-		|| ft_strcmp(cmd, "exit") == 0);
-}
-
 static void	handle_redirections(t_redir *redir_list)
 {
 	int	fd;
@@ -45,13 +32,17 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 {
 	pid_t	pid;
 	int		status;
+	int		exit_code;
 
 	pid = fork();
 	if (pid == 0)
 	{
 		reset_signal_handlers();
 		handle_redirections(cmd->redirs);
-		exit(run_builtin(cmd, sh));
+		exit_code = run_builtin(cmd, sh);
+		gc_clear(&sh->gc);
+		gc_clear(&sh->env_gc);
+		exit(exit_code);
 	}
 	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
@@ -59,6 +50,17 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
+}
+
+static void	execute_child_process(t_cmd *cmd, t_minishell *sh, char *full_path)
+{
+	reset_signal_handlers();
+	handle_redirections(cmd->redirs);
+	execve(full_path, cmd->argv, sh->envp);
+	perror("execve");
+	gc_clear(&sh->gc);
+	gc_clear(&sh->env_gc);
+	exit(127);
 }
 
 // WIFEXITED returns true if the child process terminated normally
@@ -77,13 +79,7 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 			, write(2, ": command not found\n", 21), 127);
 	pid = fork();
 	if (pid == 0)
-	{
-		reset_signal_handlers();
-		handle_redirections(cmd->redirs);
-		execve(full_path, cmd->argv, sh->envp);
-		perror("execve");
-		exit(127);
-	}
+		execute_child_process(cmd, sh, full_path);
 	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
 	g_in_prompt = 1;

@@ -63,7 +63,7 @@ static int	builtin_export(char **argv, t_minishell *sh)
 			has_error = 1;
 		}
 		else if (ft_strchr(argv[i], '='))
-			env_set(&sh->envp, argv[i]);
+			env_set(&sh->envp, argv[i], &sh->env_gc);
 		i++;
 	}
 	return (has_error);

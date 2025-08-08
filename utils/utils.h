@@ -11,9 +11,9 @@ void	*ft_memcpy(void *dest, const void *src, size_t n);
 size_t	ft_strlen(const char *s);
 
 int		ft_atoi(const char *str);
-char	**copy_envp(char **envp);
+char	**copy_envp(char **envp, t_gc *env_gc);
 int		env_find_index(char **envp, const char *key);
-void	env_set(char ***envp_ptr, const char *entry);
+void	env_set(char ***envp_ptr, const char *entry, t_gc *env_gc);
 
 size_t	count_args(t_token *token);
 void	free_envp(char **envp);
@@ -40,5 +40,6 @@ char	*copy_word(const char *start, size_t len, t_minishell *sh);
 
 char	*ft_itoa(int n, t_minishell *sh);
 void	increment_shlvl(t_minishell *sh, char ***envp);
+int		is_builtin(const char *cmd);
 
 #endif
