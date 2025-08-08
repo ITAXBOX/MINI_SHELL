@@ -49,7 +49,7 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (1);
+	return (handle_signal_termination(status));
 }
 
 static void	execute_child_process(t_cmd *cmd, t_minishell *sh, char *full_path)
@@ -85,7 +85,7 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (1);
+	return (handle_signal_termination(status));
 }
 
 int	execute_tree(t_cmd_node *node, t_minishell *sh)

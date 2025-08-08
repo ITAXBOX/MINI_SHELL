@@ -67,5 +67,5 @@ int	execute_pipe(t_cmd_node *node, t_minishell *sh)
 	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (1);
+	return (handle_signal_termination(status));
 }

@@ -1,5 +1,16 @@
 #include "minishell.h"
 
+int	handle_signal_termination(int status)
+{
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGQUIT)
+			write(2, "Quit (core dumped)\n", 19);
+		return (128 + WTERMSIG(status));
+	}
+	return (1);
+}
+
 static void	read_heredoc_lines(const char *delimiter, t_minishell *sh,
 	int expand_vars, int write_fd)
 {
