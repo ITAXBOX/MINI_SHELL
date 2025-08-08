@@ -17,7 +17,8 @@ t_cmd_node	*parse_simple_command(t_token **curr, t_minishell *sh)
 	t_cmd		*cmd;
 	t_redir		*redir_head;
 
-	if (!*curr || (*curr)->type != T_WORD)
+	if (!*curr || ((*curr)->type != T_WORD
+			&& !((*curr)->type >= T_REDIR_IN && (*curr)->type <= T_HEREDOC)))
 		return (NULL);
 	cmd = gc_malloc(&sh->gc, sizeof(t_cmd));
 	cmd->argv = gather_args_and_redirs(curr, sh, &redir_head);

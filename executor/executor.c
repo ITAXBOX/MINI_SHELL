@@ -37,6 +37,30 @@ static void	execute_child_process(t_cmd *cmd, t_minishell *sh, char *full_path)
 
 // WIFEXITED returns true if the child process terminated normally
 // WEXITSTATUS returns the exit status of the child process
+static int	handle_empty_command(t_cmd *cmd, t_minishell *sh)
+{
+	pid_t	pid;
+	int		status;
+
+	if (!cmd->redirs)
+		return (0);
+	pid = fork();
+	if (pid == 0)
+	{
+		reset_signal_handlers();
+		handle_redirections(cmd->redirs);
+		gc_clear(&sh->gc);
+		gc_clear(&sh->env_gc);
+		exit(0);
+	}
+	g_in_prompt = 0;
+	waitpid(pid, &status, 0);
+	g_in_prompt = 1;
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (handle_signal_termination(status));
+}
+
 static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 {
 	pid_t	pid;
@@ -45,15 +69,15 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 
 	clean_argv(cmd->argv);
 	if (!cmd->argv[0] || cmd->argv[0][0] == '\0')
-		return (0);
+		return (handle_empty_command(cmd, sh));
 	if (is_expandable_command(cmd->argv[0]))
 		return (execute_expanded_command(cmd->argv[0], sh));
 	if (is_builtin(cmd->argv[0]))
 		return (execute_builtin_dispatch(cmd, sh));
 	full_path = resolve_command_path(cmd->argv[0], sh);
 	if (!full_path)
-		return (write(2, cmd->argv[0], ft_strlen(cmd->argv[0]))
-			, write(2, ": command not found\n", 21), 127);
+		return (write(2, cmd->argv[0], ft_strlen(cmd->argv[0])),
+			write(2, ": command not found\n", 21), 127);
 	pid = fork();
 	if (pid == 0)
 		execute_child_process(cmd, sh, full_path);
