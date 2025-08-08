@@ -7,7 +7,6 @@ static void	env_unset(char **envp, const char *key)
 	i = env_find_index(envp, key);
 	if (i < 0)
 		return ;
-	free(envp[i]);
 	while (envp[i])
 	{
 		envp[i] = envp[i + 1];
