@@ -1,5 +1,27 @@
 #include "minishell.h"
 
+void	clean_argv(char **argv)
+{
+	int	i;
+	int	j;
+
+	if (!argv)
+		return ;
+	i = 0;
+	j = 0;
+	while (argv[i])
+	{
+		if (argv[i][0] != '\0')
+		{
+			if (i != j)
+				argv[j] = argv[i];
+			j++;
+		}
+		i++;
+	}
+	argv[j] = NULL;
+}
+
 char	*env_get(const char *key, char **envp)
 {
 	size_t	len;

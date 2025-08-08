@@ -71,6 +71,9 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	int		status;
 	char	*full_path;
 
+	clean_argv(cmd->argv);
+	if (!cmd->argv[0] || cmd->argv[0][0] == '\0')
+		return (0);
 	if (is_expandable_command(cmd->argv[0]))
 		return (execute_expanded_command(cmd->argv[0], sh));
 	if (is_builtin(cmd->argv[0]))

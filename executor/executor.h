@@ -13,6 +13,7 @@ int		builtin_echo(char **argv);
 int		builtin_pwd(char **argv);
 int		builtin_env(t_minishell *sh);
 
+void	clean_argv(char **argv);
 char	*env_get(const char *key, char **envp);
 int		is_expandable_command(const char *cmd);
 int		execute_expanded_command(const char *cmd_str, t_minishell *sh);	
