@@ -25,6 +25,7 @@ DEBUGDIR	= debugging
 SRCS		= minishell.c \
 			  $(LEXERDIR)/lexer.c \
 			  $(LEXERDIR)/expand_variables.c \
+			  $(LEXERDIR)/expand_variables_utils.c \
 			  $(LEXERDIR)/lexer_utils.c \
 			  $(LEXERDIR)/lexer_tools.c \
 			  $(GCDIR)/gc.c \
@@ -35,6 +36,7 @@ SRCS		= minishell.c \
 			  $(UTILSDIR)/utils5.c \
 			  $(UTILSDIR)/utils6.c \
 			  $(UTILSDIR)/utils7.c \
+			  $(UTILSDIR)/utils8.c \
 			  $(UTILSDIR)/validation_sort.c \
 			  $(PARSERDIR)/parser.c \
 			  $(PARSERDIR)/parser_tools.c \
@@ -48,6 +50,8 @@ SRCS		= minishell.c \
 			  $(EXECUTEDIR)/builtins.c \
 			  $(EXECUTEDIR)/builtins_functions.c \
 			  $(EXECUTEDIR)/builtin_cd.c \
+			  $(EXECUTEDIR)/execute_command.c \
+			  $(EXECUTEDIR)/handle_redirections.c \
 			  $(DEBUGDIR)/debugging_tools_1.c \
 			  $(DEBUGDIR)/debugging_tools_2.c \
 			  $(SIGNDIR)/signals.c

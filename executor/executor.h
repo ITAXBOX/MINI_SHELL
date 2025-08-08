@@ -7,6 +7,7 @@ char	*resolve_command_path(const char *cmd, t_minishell *sh);
 
 int		fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh);
 int		execute_tree(t_cmd_node *node, t_minishell *sh);
+void	execute_child_process_bin_sh(int pipefd[2], const char *cmd);
 
 int		builtin_cd(char **argv, t_minishell *sh);
 int		builtin_echo(char **argv);
@@ -21,4 +22,7 @@ int		handle_signal_termination(int status);
 int		handle_heredoc(const char *delimiter, t_minishell *sh, int expand_vars);
 int		execute_pipe(t_cmd_node *node, t_minishell *sh);
 
+void	append_command_output(const char *cmd, char *res,
+		size_t *j, t_minishell *sh);
+void	handle_redirections(t_redir *redir_list);
 #endif

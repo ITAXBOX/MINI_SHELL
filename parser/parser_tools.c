@@ -10,22 +10,26 @@ static char	**add_single_arg(char **argv, char *value, t_gather_data *data)
 static t_redir	*create_redirection(t_token **token_ptr, t_minishell *sh)
 {
 	t_redir	*redir;
+	int		expand_vars;
 
 	if (!(*token_ptr)->next || (*token_ptr)->next->type != T_WORD)
 		return (NULL);
 	redir = gc_malloc(&sh->gc, sizeof(t_redir));
 	redir->type = (*token_ptr)->type;
+	redir->next = NULL;
 	if ((*token_ptr)->type == T_HEREDOC)
 	{
 		redir->file = (*token_ptr)->next->value;
-		redir->heredoc_fd = handle_heredoc(redir->file, sh, 1);
+		expand_vars = !(*token_ptr)->next->was_quoted;
+		redir->heredoc_fd = handle_heredoc(redir->file, sh, expand_vars);
+		if (redir->heredoc_fd == -1)
+			return (NULL);
 	}
 	else
 	{
 		redir->file = (*token_ptr)->next->value;
 		redir->heredoc_fd = -1;
 	}
-	redir->next = NULL;
 	*token_ptr = (*token_ptr)->next->next;
 	return (redir);
 }

@@ -1,84 +1,62 @@
 #include "minishell.h"
 
-static int	is_var_char(char c, int first)
+static size_t	handle_variable_expansion(const char *input, size_t i,
+					t_expand_ctx *ctx)
 {
-	if (first && c == '?')
-		return (1);
-	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')
-		return (1);
-	if (!first && (c >= '0' && c <= '9'))
-		return (1);
-	return (0);
-}
-
-static char	*extract_var_name(const char *input, size_t *i, t_minishell *sh)
-{
-	const char	*start;
-	size_t		len;
-	char		*name;
-
-	start = &input[*i];
-	if (input[*i] == '?')
-	{
-		(*i)++;
-		return (gc_strdup("?", &sh->gc));
-	}
-	len = 0;
-	while (input[*i] && is_var_char(input[*i], 0))
-	{
-		(*i)++;
-		len++;
-	}
-	name = gc_malloc(&sh->gc, len + 1);
-	ft_strncpy(name, start, len);
-	name[len] = '\0';
-	return (name);
-}
-
-static void	append_var_value(char *name, char *res, size_t *j, t_minishell *sh)
-{
-	char	*val;
-	size_t	k;
-
-	val = get_var_value(name, sh);
-	if (!val)
-		return ;
-	k = 0;
-	while (val[k])
-		res[(*j)++] = val[k++];
-}
-
-static size_t	calculate_needed_size(const char *input, t_minishell *sh)
-{
-	size_t	needed_size;
-	size_t	i;
 	char	*name;
-	char	*val;
 
-	needed_size = ft_strlen(input);
-	i = 0;
-	while (input[i])
+	i++;
+	name = extract_var_name(input, &i, ctx->sh);
+	append_var_value(name, ctx->res, ctx->j, ctx->sh);
+	return (i);
+}
+
+static size_t	handle_backtick_expansion(const char *input, size_t i,
+					t_expand_ctx *ctx)
+{
+	const char	*cmd_start;
+	size_t		cmd_len;
+	char		*cmd;
+
+	i++;
+	cmd_start = &input[i];
+	cmd_len = 0;
+	while (input[i] && input[i] != '`')
 	{
-		if (input[i] == '$' && input[i + 1] && is_var_char(input[i + 1], 1))
-		{
-			i++;
-			name = extract_var_name(input, &i, sh);
-			val = get_var_value(name, sh);
-			if (val)
-				needed_size += ft_strlen(val);
-		}
-		else
-			i++;
+		cmd_len++;
+		i++;
 	}
-	return (needed_size + 1);
+	if (input[i] == '`')
+	{
+		cmd = gc_malloc(&ctx->sh->gc, cmd_len + 1);
+		ft_strncpy(cmd, cmd_start, cmd_len);
+		cmd[cmd_len] = '\0';
+		append_command_output(cmd, ctx->res, ctx->j, ctx->sh);
+		return (i + 1);
+	}
+	ctx->res[(*ctx->j)++] = '`';
+	while (cmd_len-- > 0)
+		ctx->res[(*ctx->j)++] = *cmd_start++;
+	return (i);
+}
+
+static size_t	process_expansion_char(const char *input, size_t i,
+					t_expand_ctx *ctx)
+{
+	if (input[i] == '$' && input[i + 1] && is_var_char(input[i + 1], 1))
+		return (handle_variable_expansion(input, i, ctx));
+	if (input[i] == '`')
+		return (handle_backtick_expansion(input, i, ctx));
+	ctx->res[(*ctx->j)++] = input[i++];
+	return (i);
 }
 
 char	*expand_variables(const char *input, t_minishell *sh)
 {
-	char	*res;
-	size_t	i;
-	size_t	j;
-	char	*name;
+	char			*res;
+	size_t			i;
+	size_t			j;
+	t_expand_ctx	ctx;
 
 	if (!input)
 		return (gc_strdup("", &sh->gc));
@@ -87,17 +65,11 @@ char	*expand_variables(const char *input, t_minishell *sh)
 		return (gc_strdup("", &sh->gc));
 	i = 0;
 	j = 0;
+	ctx.res = res;
+	ctx.j = &j;
+	ctx.sh = sh;
 	while (input[i])
-	{
-		if (input[i] == '$' && input[i + 1] && is_var_char(input[i + 1], 1))
-		{
-			i++;
-			name = extract_var_name(input, &i, sh);
-			append_var_value(name, res, &j, sh);
-		}
-		else
-			res[j++] = input[i++];
-	}
+		i = process_expansion_char(input, i, &ctx);
 	res[j] = '\0';
 	return (res);
 }

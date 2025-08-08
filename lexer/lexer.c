@@ -7,6 +7,7 @@ static t_token	*create_token(t_minishell *sh, char *val, t_token_type type)
 	tok = gc_malloc(&sh->gc, sizeof(t_token));
 	tok->value = val;
 	tok->type = type;
+	tok->was_quoted = 0;
 	tok->next = NULL;
 	return (tok);
 }
@@ -16,13 +17,18 @@ static t_token	*get_next_token(const char **s, t_minishell *sh)
 	char			*word;
 	char			*op;
 	t_token_type	type;
+	t_token			*token;
+	int				quoted;
 
+	quoted = (**s == '\'' || **s == '"');
 	if (**s == '\'' || **s == '"' || !ft_strchr("|&<>() \t", **s))
 	{
 		word = extract_word(s, sh);
 		if (!word)
 			return (NULL);
-		return (create_token(sh, word, T_WORD));
+		token = create_token(sh, word, T_WORD);
+		token->was_quoted = quoted;
+		return (token);
 	}
 	op = extract_operator(s, &type, sh);
 	if (!op)

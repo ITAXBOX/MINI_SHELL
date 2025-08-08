@@ -1,33 +1,5 @@
 #include "minishell.h"
 
-static void	handle_redirections(t_redir *redir_list)
-{
-	int	fd;
-
-	while (redir_list)
-	{
-		if (redir_list->type == T_REDIR_IN)
-			fd = open(redir_list->file, O_RDONLY);
-		else if (redir_list->type == T_REDIR_OUT)
-			fd = open(redir_list->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (redir_list->type == T_REDIR_APPEND)
-			fd = open(redir_list->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else if (redir_list->type == T_HEREDOC)
-			fd = redir_list->heredoc_fd;
-		if (fd < 0)
-		{
-			perror(redir_list->file);
-			exit(1);
-		}
-		if (redir_list->type == T_REDIR_IN || redir_list->type == T_HEREDOC)
-			dup2(fd, STDIN_FILENO);
-		else
-			dup2(fd, STDOUT_FILENO);
-		close(fd);
-		redir_list = redir_list->next;
-	}
-}
-
 int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 {
 	pid_t	pid;
