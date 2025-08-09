@@ -25,7 +25,8 @@ static char	*read_command_output(int fd, t_minishell *sh)
 
 	result = gc_strdup("", &sh->gc);
 	total_len = 0;
-	while ((bytes_read = read(fd, buffer, sizeof(buffer) - 1)) > 0)
+	bytes_read = read(fd, buffer, sizeof(buffer) - 1);
+	while (bytes_read > 0)
 	{
 		buffer[bytes_read] = '\0';
 		if (bytes_read > 0 && buffer[bytes_read - 1] == '\n')
@@ -38,6 +39,7 @@ static char	*read_command_output(int fd, t_minishell *sh)
 		ft_strcat(new_result, buffer);
 		result = new_result;
 		total_len += ft_strlen(buffer);
+		bytes_read = read(fd, buffer, sizeof(buffer) - 1);
 	}
 	return (result);
 }
