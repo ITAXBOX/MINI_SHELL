@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minishell Architecture Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin: 30px 0 20px 0;
+            font-size: 1.8em;
+            padding: 15px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+
+        h3 {
+            color: #2980b9;
+            margin: 25px 0 15px 0;
+            font-size: 1.4em;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+
+        h4 {
+            color: #27ae60;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            border-left: 4px solid #4299e1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        .inline-code {
+            background: #e2e8f0;
+            color: #2d3748;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .flow-diagram {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .flow-step {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(52, 152, 219, 0.3);
+        }
+
+        .arrow {
+            display: inline-block;
+            font-size: 1.5em;
+            color: #7f8c8d;
+            margin: 0 10px;
+        }
+
+        .example-box {
+            background: #e8f5e8;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .warning-box {
+            background: #fef5e7;
+            border: 1px solid #f39c12;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .data-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            overflow-x: auto;
+        }
+
+        .tree-diagram {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .toc {
+            background: #f1f3f4;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toc a:hover {
+            background-color: #e3f2fd;
+            text-decoration: underline;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .process-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 5px;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .process-flow {
+                flex-direction: column;
+            }
+            
+            .process-step {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐚 Minishell Architecture Guide</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #7f8c8d; margin-bottom: 30px;">
+            Comprehensive guide to our minishell project
+        </p>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#overview">1. System Overview</a></li>
+                <li><a href="#architecture">2. Project Architecture</a></li>
+                <li><a href="#dataflow">3. Data Flow & Communication</a></li>
+                <li><a href="#lexer">4. Lexer - Tokenization Engine</a></li>
+                <li><a href="#parser">5. Parser - AST Builder</a></li>
+                <li><a href="#executor">6. Executor - Command Runner</a></li>
+                <li><a href="#builtins">7. Built-in Commands</a></li>
+                <li><a href="#signals">8. Signal Management</a></li>
+                <li><a href="#memory">9. Memory Management</a></li>
+                <li><a href="#examples">10. Detailed Examples</a></li>
+                <li><a href="#debugging">11. Debugging & Testing</a></li>
+                <li><a href="#performance">12. Performance Considerations</a></li>
+            </ul>
+        </div>
+
+        <div id="overview" class="section">
+            <h2>🏗️ System Overview</h2>
+            <p>The minishell follows a classic <span class="highlight">three-phase architecture</span> where each component has a distinct responsibility:</p>
+            
+            <div class="process-flow">
+                <div class="process-step">
+                    <strong>LEXER</strong><br>
+                    String → Tokens
+                </div>
+                <div class="process-step">
+                    <strong>PARSER</strong><br>
+                    Tokens → AST
+                </div>
+                <div class="process-step">
+                    <strong>EXECUTOR</strong><br>
+                    AST → Process
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>🎯 Design Philosophy:</strong> Each phase is independent and can be tested/debugged separately. This modular approach makes the shell maintainable and extensible.
+            </div>
+        </div>
+
+        <div id="architecture" class="section">
+            <h2>🏗️ Project Architecture</h2>
+            
+            <h3>Directory Structure</h3>
+            <div class="tree-diagram">
+MINI_SHELL/
+├── minishell.c          # Main entry point
+├── minishell.h          # Global includes and structures
+├── Makefile             # Build configuration
+│
+├── lexer/               # Tokenization phase
+│   ├── lexer.c             # Main tokenizer
+│   ├── lexer.h             # Lexer headers
+│   ├── lexer_tools.c       # Token extraction utilities
+│   ├── lexer_utils.c       # Helper functions
+│   ├── expand_variables.c  # Variable expansion
+│   └── expand_variables_utils.c
+│
+├── parser/              # AST construction phase
+│   ├── parser.c            # Main parser (recursive descent)
+│   ├── parser.h            # Parser headers
+│   ├── parse_simple.c      # Simple command parsing
+│   ├── parser_tools.c      # AST node creation
+│   ├── parser_tools2.c     # Additional utilities
+│   └── wildcard.c          # Wildcard expansion
+│
+├── executor/            # Command execution phase
+│   ├── executor.c          # Main execution engine
+│   ├── executor.h          # Executor headers
+│   ├── execute_command.c   # Command substitution
+│   ├── executor_utils.c    # Process management
+│   ├── executor_utils2.c   # Path resolution
+│   ├── executor_utils3.c   # Additional utilities
+│   ├── builtins.c          # Built-in command dispatcher
+│   ├── builtins_functions.c # Built-in implementations
+│   ├── builtin_cd.c        # cd command implementation
+│   └── handle_redirections.c # I/O redirection
+│
+├── signals/             # Signal handling
+│   ├── signals.c           # Signal handlers
+│   └── signals.h           # Signal headers
+│
+├── gc/                  # Memory management
+│   ├── gc.c                # Garbage collector implementation
+│   └── gc.h                # GC headers
+│
+├── utils/               # Utility functions
+│   ├── utils.h             # Utility headers
+│   ├── utils1.c → utils8.c # String manipulation, I/O, etc.
+│   └── validation_sort.c   # Input validation
+│
+└── debugging/           # Development tools
+    ├── debugging_tools.h   # Debug headers
+    ├── debugging_tools_1.c # Token debugging
+    └── debugging_tools_2.c # AST debugging
+            </div>
+
+            <h3>Module Dependencies</h3>
+            <div class="info-box">
+                <strong>🔗 Dependency Flow:</strong>
+                <ul>
+                    <li><strong>minishell.c</strong> → Uses all modules</li>
+                    <li><strong>lexer</strong> → Depends on: gc, utils</li>
+                    <li><strong>parser</strong> → Depends on: lexer, gc, utils</li>
+                    <li><strong>executor</strong> → Depends on: parser, signals, gc, utils</li>
+                    <li><strong>All modules</strong> → Share common utilities and memory management</li>
+                </ul>
+            </div>
+
+            <h3>Compilation Flow</h3>
+            <div class="code-block">
+# Makefile targets
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -g
+LDFLAGS = -lreadline
+
+# Object files organization
+OBJS = $(SRCDIR)/minishell.o \
+       $(OBJDIR)/lexer/*.o \
+       $(OBJDIR)/parser/*.o \
+       $(OBJDIR)/executor/*.o \
+       $(OBJDIR)/signals/*.o \
+       $(OBJDIR)/gc/*.o \
+       $(OBJDIR)/utils/*.o \
+       $(OBJDIR)/debugging/*.o
+
+# Build process
+all: $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
+
+# Debug mode
+debug: CFLAGS += -DDEBUG_MODE=1
+debug: $(NAME)
+            </div>
+        </div>
+
+        <div id="dataflow" class="section">
+            <h2>🔄 Data Flow & Communication</h2>
+            
+            <h3>Inter-Module Communication</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">User Input</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Readline</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Lexer</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Parser</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Executor</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Output</div>
+            </div>
+
+            <h3>Data Structures Flow</h3>
+            <div class="code-block">
+/* Main shell context passed through all phases */
+typedef struct s_minishell {
+    t_gc    gc;                    // Temporary memory pool
+    t_gc    env_gc;               // Environment memory pool
+    t_token *tokens;              // Current token stream
+    int     last_exit_status;     // $? variable
+    char    **envp;               // Environment variables
+    int     in_logical_or_pipe;   // Execution context flag
+} t_minishell;
+
+/* Data transformation chain */
+char *input              // Raw user input
+  ↓
+t_token *tokens         // Linked list of tokens
+  ↓
+t_cmd_node *ast         // Abstract syntax tree
+  ↓
+int exit_status         // Command result
+            </div>
+
+            <h3>Communication Patterns</h3>
+            <div class="example-box">
+                <strong>🔄 Pattern: Context Passing</strong><br>
+                All functions receive <span class="inline-code">t_minishell *sh</span> parameter for:
+                <ul>
+                    <li>Memory allocation through GC</li>
+                    <li>Environment variable access</li>
+                    <li>Exit status tracking</li>
+                    <li>Execution context sharing</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <strong>🔄 Pattern: Token Consumption</strong><br>
+                Parser functions use <span class="inline-code">t_token **curr</span> pattern:
+                <ul>
+                    <li>Current token pointer passed by reference</li>
+                    <li>Functions advance pointer as they consume tokens</li>
+                    <li>Enables recursive descent parsing</li>
+                    <li>Automatic error recovery on invalid syntax</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="lexer" class="section">
+            <h2>🔤 LEXER - Tokenization Engine</h2>
+            
+            <h3>Purpose & Responsibility</h3>
+            <p>The lexer converts raw input strings into a stream of <span class="highlight">structured tokens</span> that represent different shell elements.</p>
+
+            <h3>Core Data Structures</h3>
+            
+            <h4>Token Types</h4>
+            <div class="data-structure">
+typedef enum e_token_type {
+    T_WORD,         // Commands, arguments, filenames
+    T_PIPE,         // |
+    T_REDIR_IN,     // &lt;
+    T_REDIR_OUT,    // &gt;
+    T_REDIR_APPEND, // &gt;&gt;
+    T_HEREDOC,      // &lt;&lt;
+    T_AND_IF,       // &amp;&amp;
+    T_OR_IF,        // ||
+    T_PAREN_L,      // (
+    T_PAREN_R       // )
+} t_token_type;
+            </div>
+
+            <h4>Token Structure</h4>
+            <div class="data-structure">
+typedef struct s_token {
+    char            *value;      // Token content
+    t_token_type    type;        // Token classification
+    int             was_quoted;  // Quote tracking for expansion
+    struct s_token  *next;       // Linked list pointer
+} t_token;
+            </div>
+
+            <h3>Key Functions & Process Flow</h3>
+
+            <h4>1. Main Entry Point</h4>
+            <div class="code-block">t_token *tokenize_input(const char *input, t_minishell *sh)
+{
+    // Main tokenization loop
+    while (*input) {
+        skip_whitespace(&input);
+        new_token = get_next_token(&input, sh);
+        add_token_to_list(&head, &tail, new_token);
+    }
+    return head;
+}</div>
+
+            <h4>2. Token Recognition</h4>
+            <div class="code-block">static t_token *get_next_token(const char **s, t_minishell *sh)
+{
+    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>() \t", **s)) {
+        // Handle words (quoted or unquoted)
+        word = extract_word(s, sh);
+        token = create_token(sh, word, T_WORD);
+    } else {
+        // Handle operators
+        word = extract_operator(s, &type, sh);
+        token = create_token(sh, word, type);
+    }
+    return token;
+}</div>
+
+            <h3>Variable Expansion System</h3>
+            
+            <div class="info-box">
+                <strong>🔧 Expansion Features:</strong>
+                <ul>
+                    <li><span class="inline-code">$VAR</span> - Environment variables</li>
+                    <li><span class="inline-code">$?</span> - Last exit status</li>
+                    <li><span class="inline-code">`command`</span> - Command substitution</li>
+                    <li><span class="inline-code">*.txt</span> - Wildcard expansion</li>
+                </ul>
+            </div>
+
+            <h4>Variable Expansion Process</h4>
+            <div class="code-block">char *expand_variables(const char *input, t_minishell *sh)
+{
+    // Calculate needed size first (prevents realloc)
+    size_t needed_size = calculate_needed_size(input, sh);
+    char *result = gc_malloc(&sh->gc, needed_size);
+    
+    while (input[i]) {
+        if (input[i] == '$' && is_var_char(input[i + 1], 1)) {
+            // Extract variable name and append value
+            name = extract_var_name(input, &i, sh);
+            append_var_value(name, result, &j, sh);
+        } else if (input[i] == '`') {
+            // Command substitution
+            handle_backtick_expansion(input, i, &ctx);
+        } else {
+            result[j++] = input[i++];
+        }
+    }
+    return result;
+}</div>
+
+            <div class="example-box">
+                <strong>📝 Lexer Example:</strong><br>
+                <strong>Input:</strong> <span class="inline-code">echo "Hello $USER" | grep `whoami` > /tmp/output.txt</span><br><br>
+                <strong>Tokens Generated:</strong><br>
+                <div class="tree-diagram">
+[T_WORD]    "echo"
+[T_WORD]    "Hello $USER" (expanded to "Hello john")
+[T_PIPE]    "|"
+[T_WORD]    "grep"
+[T_WORD]    "`whoami`" (expanded to "john")
+[T_REDIR_OUT] ">"
+[T_WORD]    "/tmp/output.txt"
+                </div>
+            </div>
+        </div>
+
+        <div id="parser" class="section">
+            <h2>🌳 PARSER - AST Builder</h2>
+            
+            <h3>Purpose & Responsibility</h3>
+            <p>The parser takes the token stream and constructs an <span class="highlight">Abstract Syntax Tree (AST)</span> representing the command structure with proper operator precedence and associativity.</p>
+
+            <h3>Core Data Structures</h3>
+
+            <h4>Command Node (AST Node)</h4>
+            <div class="data-structure">
+typedef enum e_node_type {
+    N_SIMPLE,    // Single command
+    N_PIPE,      // Pipeline |
+    N_AND,       // Logical AND &&
+    N_OR,        // Logical OR ||
+} t_node_type;
+
+typedef struct s_cmd_node {
+    t_node_type         type;     // Node classification
+    struct s_cmd_node   *left;    // Left child
+    struct s_cmd_node   *right;   // Right child
+    t_cmd               *cmd;     // Command data (for N_SIMPLE)
+} t_cmd_node;
+            </div>
+
+            <h4>Simple Command Structure</h4>
+            <div class="data-structure">
+typedef struct s_cmd {
+    char    **argv;      // Command arguments array
+    t_redir *redirs;     // Redirection list
+} t_cmd;
+
+typedef struct s_redir {
+    t_token_type    type;        // Redirection type
+    char            *file;       // Target file
+    int             heredoc_fd;  // Heredoc file descriptor
+    struct s_redir  *next;       // Next redirection
+} t_redir;
+            </div>
+
+            <h3>Parsing Strategy - Recursive Descent</h3>
+            
+            <div class="info-box">
+                <strong>📐 Operator Precedence (Lowest to Highest):</strong>
+                <ol>
+                    <li><span class="inline-code">||</span>, <span class="inline-code">&&</span> - Logical operators</li>
+                    <li><span class="inline-code">|</span> - Pipeline</li>
+                    <li>Simple commands with redirections</li>
+                    <li><span class="inline-code">()</span> - Parentheses (highest)</li>
+                </ol>
+            </div>
+
+            <h4>1. Top-Level Parser (Logical Operations)</h4>
+            <div class="code-block">t_cmd_node *parse_logical(t_token **curr, t_minishell *sh)
+{
+    // Parse left side (higher precedence)
+    left = parse_pipeline(curr, sh);
+    
+    // Handle && and || operators (left associative)
+    while (*curr && ((*curr)->type == T_AND_IF || (*curr)->type == T_OR_IF)) {
+        op_type = (*curr)->type;
+        *curr = (*curr)->next;
+        right = parse_pipeline(curr, sh);
+        left = create_logic_node(left, right, op_type, sh);
+    }
+    return left;
+}</div>
+
+            <h4>2. Pipeline Parser</h4>
+            <div class="code-block">t_cmd_node *parse_pipeline(t_token **curr, t_minishell *sh)
+{
+    // Parse first command or grouped expression
+    left = parse_pipeline_group_or_cmd(curr, sh);
+    
+    // Handle | operators (left associative)
+    while (*curr && (*curr)->type == T_PIPE) {
+        *curr = (*curr)->next;
+        right = parse_pipeline_group_or_cmd(curr, sh);
+        
+        // Create pipe node
+        pipe_node = create_pipe_node(left, right, sh);
+        left = pipe_node;
+    }
+    return left;
+}</div>
+
+            <h4>3. Simple Command Parser</h4>
+            <div class="code-block">t_cmd_node *parse_simple_command(t_token **curr, t_minishell *sh)
+{
+    cmd = gc_malloc(&sh->gc, sizeof(t_cmd));
+    
+    // Gather arguments and redirections
+    cmd->argv = gather_args_and_redirs(curr, sh, &redir_head);
+    cmd->redirs = redir_head;
+    
+    // Create AST node
+    node = create_simple_node(cmd, sh);
+    return node;
+}</div>
+
+            <h3>Advanced Features</h3>
+
+            <h4>Wildcard Expansion</h4>
+            <div class="code-block">char **expand_wildcard(const char *pattern, t_gc *gc)
+{
+    DIR *dir = opendir(".");
+    char **matches = collect_matches(pattern, gc, &count);
+    
+    // Use fnmatch() for pattern matching
+    while ((entry = readdir(dir))) {
+        if (entry->d_name[0] != '.' && 
+            match_pattern(pattern, entry->d_name)) {
+            matches[count++] = gc_strdup(entry->d_name, gc);
+        }
+    }
+    return matches;
+}</div>
+
+            <div class="example-box">
+                <strong>📝 Parser Example:</strong><br>
+                <strong>Input:</strong> <span class="inline-code">ls -l | grep txt && echo "found" || echo "not found"</span><br><br>
+                <strong>AST Generated:</strong><br>
+                <div class="tree-diagram">
+                 N_OR
+                /    \
+             N_AND   N_SIMPLE
+            /    \      |
+         N_PIPE  N_SIMPLE  echo "not found"
+        /      \     |
+   N_SIMPLE  N_SIMPLE  echo "found"
+      |         |
+   ls -l    grep txt
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Parser Considerations:</strong>
+                <ul>
+                    <li><strong>Left Associativity:</strong> <span class="inline-code">a && b && c</span> parses as <span class="inline-code">(a && b) && c</span></li>
+                    <li><strong>Precedence:</strong> <span class="inline-code">a | b && c</span> parses as <span class="inline-code">(a | b) && c</span></li>
+                    <li><strong>Grouping:</strong> <span class="inline-code">(a || b) | c</span> forces evaluation order</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="executor" class="section">
+            <h2>⚡ EXECUTOR - Command Runner</h2>
+            
+            <h3>Purpose & Responsibility</h3>
+            <p>The executor traverses the AST and executes commands according to <span class="highlight">shell semantics</span>, handling process creation, pipes, redirections, and exit codes.</p>
+
+            <h3>Execution Strategy</h3>
+
+            <h4>Main Execution Dispatcher</h4>
+            <div class="code-block">int execute_tree(t_cmd_node *node, t_minishell *sh)
+{
+    if (!node) return 1;
+    
+    switch (node->type) {
+        case N_SIMPLE:
+            return execute_simple(node->cmd, sh);
+            
+        case N_PIPE:
+            return execute_pipe(node, sh);
+            
+        case N_AND:
+            left_status = execute_tree(node->left, sh);
+            if (left_status == 0)  // Success: execute right
+                return execute_tree(node->right, sh);
+            return left_status;     // Failure: short-circuit
+            
+        case N_OR:
+            left_status = execute_tree(node->left, sh);
+            if (left_status != 0)  // Failure: execute right
+                return execute_tree(node->right, sh);
+            return left_status;     // Success: short-circuit
+    }
+}</div>
+
+            <h3>Command Types & Execution</h3>
+
+            <h4>1. Built-in Commands</h4>
+            <div class="info-box">
+                <strong>🔧 Built-in Commands:</strong>
+                <ul>
+                    <li><span class="inline-code">cd</span> - Change directory</li>
+                    <li><span class="inline-code">echo</span> - Print text</li>
+                    <li><span class="inline-code">pwd</span> - Print working directory</li>
+                    <li><span class="inline-code">env</span> - Print environment</li>
+                    <li><span class="inline-code">export</span> - Set environment variables</li>
+                    <li><span class="inline-code">unset</span> - Remove environment variables</li>
+                    <li><span class="inline-code">exit</span> - Exit shell</li>
+                </ul>
+            </div>
+
+            <div class="code-block">int execute_builtin_dispatch(t_cmd *cmd, t_minishell *sh)
+{
+    if (sh->in_logical_or_pipe) {
+        // Fork for builtins in pipes/logical operators
+        return fork_and_execute_builtin(cmd, sh);
+    } else {
+        // Execute directly in shell process
+        handle_redirections(cmd->redirs);
+        return run_builtin(cmd, sh);
+    }
+}</div>
+
+            <h4>2. External Commands</h4>
+            <div class="code-block">static int execute_simple(t_cmd *cmd, t_minishell *sh)
+{
+    // Resolve command path
+    full_path = resolve_command_path(cmd->argv[0], sh);
+    if (!full_path) {
+        write(2, "command not found\n", 18);
+        return 127;
+    }
+    
+    // Fork child process
+    pid = fork();
+    if (pid == 0) {
+        // Child process
+        reset_signal_handlers();
+        handle_redirections(cmd->redirs);
+        execve(full_path, cmd->argv, sh->envp);
+        exit(127);  // execve failed
+    }
+    
+    // Parent process
+    waitpid(pid, &status, 0);
+    return WEXITSTATUS(status);
+}</div>
+
+            <h3>Advanced Execution Features</h3>
+
+            <h4>Pipeline Execution</h4>
+            <div class="code-block">int execute_pipe(t_cmd_node *node, t_minishell *sh)
+{
+    int pipefd[2];
+    pid_t left_pid, right_pid;
+    
+    // Create pipe
+    if (pipe(pipefd) == -1) return 1;
+    
+    // Left command (writes to pipe)
+    left_pid = fork();
+    if (left_pid == 0) {
+        close(pipefd[0]);                    // Close read end
+        dup2(pipefd[1], STDOUT_FILENO);      // Redirect stdout to pipe
+        close(pipefd[1]);
+        exit(execute_tree(node->left, sh));
+    }
+    
+    // Right command (reads from pipe)
+    right_pid = fork();
+    if (right_pid == 0) {
+        close(pipefd[1]);                    // Close write end
+        dup2(pipefd[0], STDIN_FILENO);       // Redirect stdin from pipe
+        close(pipefd[0]);
+        exit(execute_tree(node->right, sh));
+    }
+    
+    // Parent closes pipe and waits
+    close(pipefd[0]);
+    close(pipefd[1]);
+    waitpid(left_pid, NULL, 0);
+    waitpid(right_pid, &status, 0);
+    
+    return WEXITSTATUS(status);  // Return right command's exit status
+}</div>
+
+            <h4>Redirection Handling</h4>
+            <div class="code-block">void handle_redirections(t_redir *redir_list)
+{
+    while (redir_list) {
+        switch (redir_list->type) {
+            case T_REDIR_IN:       // <
+                fd = open(redir_list->file, O_RDONLY);
+                dup2(fd, STDIN_FILENO);
+                break;
+                
+            case T_REDIR_OUT:      // >
+                fd = open(redir_list->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                dup2(fd, STDOUT_FILENO);
+                break;
+                
+            case T_REDIR_APPEND:   // >>
+                fd = open(redir_list->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+                dup2(fd, STDOUT_FILENO);
+                break;
+                
+            case T_HEREDOC:        // <<
+                dup2(redir_list->heredoc_fd, STDIN_FILENO);
+                break;
+        }
+        close(fd);
+        redir_list = redir_list->next;
+    }
+}</div>
+
+            <h4>Heredoc Implementation</h4>
+            <div class="code-block">int handle_heredoc(const char *delimiter, t_minishell *sh, int expand_vars)
+{
+    int pipefd[2];
+    char *line;
+    
+    if (pipe(pipefd) == -1) return -1;
+    
+    // Read lines until delimiter
+    while ((line = readline("> "))) {
+        if (ft_strcmp(line, delimiter) == 0) break;
+        
+        if (expand_vars) {
+            line = expand_variables(line, sh);
+        }
+        
+        write(pipefd[1], line, ft_strlen(line));
+        write(pipefd[1], "\n", 1);
+        free(line);
+    }
+    
+    close(pipefd[1]);
+    return pipefd[0];  // Return read end for dup2
+}</div>
+
+            <h4>Command Substitution</h4>
+            <div class="code-block">static char *execute_command_substitution(const char *cmd, t_minishell *sh)
+{
+    int pipefd[2];
+    pid_t pid;
+    
+    if (pipe(pipefd) == -1) return gc_strdup("", &sh->gc);
+    
+    pid = fork();
+    if (pid == 0) {
+        // Child: execute command with stdout to pipe
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+        
+        execve("/bin/sh", (char*[]){"/bin/sh", "-c", (char*)cmd, NULL}, sh->envp);
+        exit(127);
+    }
+    
+    // Parent: read command output
+    close(pipefd[1]);
+    result = read_command_output(pipefd[0], sh);
+    close(pipefd[0]);
+    waitpid(pid, &status, 0);
+    
+    return result;
+}</div>
+
+            <div class="example-box">
+                <strong>📝 Executor Example:</strong><br>
+                <strong>Command:</strong> <span class="inline-code">echo "hello world" | wc -w > count.txt</span><br><br>
+                <strong>Execution Flow:</strong><br>
+                <div class="tree-diagram">
+1. execute_tree() → N_PIPE
+2. execute_pipe() creates pipe[0,1]
+3. Fork left child:
+   - dup2(pipe[1], STDOUT_FILENO)
+   - execute "echo hello world"
+4. Fork right child:
+   - dup2(pipe[0], STDIN_FILENO)
+   - dup2(count_fd, STDOUT_FILENO)
+   - execute "wc -w"
+5. Parent waits for both children
+6. Return exit status of right child (wc)
+                </div>
+            </div>
+        </div>
+
+        <div id="flow" class="section">
+            <h2>🔄 Complete Data Flow</h2>
+            
+            <h3>End-to-End Processing</h3>
+            <p>Let's trace a complex command through the entire pipeline:</p>
+
+            <div class="example-box">
+                <strong>🚀 Complex Example:</strong><br>
+                <span class="inline-code">echo "Files: $(ls *.txt | wc -l)" | grep "Files" && echo "Success" || echo "Failed"</span>
+            </div>
+
+            <h4>Phase 1: Lexer Processing</h4>
+            <div class="flow-diagram">
+                <div class="flow-step">Input String</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Tokenization</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Variable Expansion</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Token Stream</div>
+            </div>
+            
+            <div class="code-block">Tokens Generated:
+[T_WORD] "echo"
+[T_WORD] "Files: $(ls *.txt | wc -l)" → "Files: 5" (after expansion)
+[T_PIPE] "|"
+[T_WORD] "grep"
+[T_WORD] "Files"
+[T_AND_IF] "&&"
+[T_WORD] "echo"
+[T_WORD] "Success"
+[T_OR_IF] "||"
+[T_WORD] "echo"
+[T_WORD] "Failed"</div>
+
+            <h4>Phase 2: Parser Processing</h4>
+            <div class="flow-diagram">
+                <div class="flow-step">Token Stream</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Syntax Analysis</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">AST Construction</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">AST Tree</div>
+            </div>
+            
+            <div class="tree-diagram">
+AST Generated:
+                    N_OR
+                   /    \
+                N_AND   N_SIMPLE
+               /    \      |
+            N_PIPE  N_SIMPLE   echo "Failed"
+           /      \     |
+      N_SIMPLE  N_SIMPLE   echo "Success"
+         |         |
+   echo "Files: 5"  grep "Files"
+            </div>
+
+            <h4>Phase 3: Executor Processing</h4>
+            <div class="flow-diagram">
+                <div class="flow-step">AST Traversal</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Process Creation</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Command Execution</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Exit Status</div>
+            </div>
+
+            <div class="code-block">Execution Sequence:
+1. execute_tree(N_OR)
+2. ├─ execute_tree(N_AND)
+3. │  ├─ execute_tree(N_PIPE)
+4. │  │  ├─ fork() → echo "Files: 5" | pipe_write
+5. │  │  └─ fork() → pipe_read | grep "Files"
+6. │  │  └─ return 0 (grep found match)
+7. │  └─ execute_tree(N_SIMPLE) → echo "Success"
+8. │  └─ return 0 (success)
+9. └─ Short-circuit: don't execute echo "Failed"
+10. Final exit status: 0</div>
+        </div>
+
+        <div id="builtins" class="section">
+            <h2>🛠️ Built-in Commands</h2>
+            
+            <h3>Built-in Command System</h3>
+            <p>Built-ins are commands executed directly by the shell without creating external processes.</p>
+
+            <h4>Command Detection & Dispatch</h4>
+            <div class="code-block">
+int is_builtin(const char *cmd)
+{
+    const char *builtins[] = {
+        "echo", "cd", "pwd", "export", 
+        "unset", "env", "exit", NULL
+    };
+    
+    for (int i = 0; builtins[i]; i++) {
+        if (ft_strcmp(cmd, builtins[i]) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+int run_builtin(t_cmd *cmd, t_minishell *sh)
+{
+    if (ft_strcmp(cmd->argv[0], "echo") == 0)
+        return builtin_echo(cmd->argv);
+    else if (ft_strcmp(cmd->argv[0], "cd") == 0)
+        return builtin_cd(cmd->argv, sh);
+    else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
+        return builtin_pwd(cmd->argv, sh);
+    else if (ft_strcmp(cmd->argv[0], "env") == 0)
+        return builtin_env(sh);
+    else if (ft_strcmp(cmd->argv[0], "export") == 0)
+        return builtin_export(cmd->argv, sh);
+    else if (ft_strcmp(cmd->argv[0], "unset") == 0)
+        return builtin_unset(cmd->argv, sh);
+    else if (ft_strcmp(cmd->argv[0], "exit") == 0)
+        return builtin_exit(cmd->argv, sh);
+    return 1;
+}
+            </div>
+
+            <h3>Individual Built-in Implementations</h3>
+
+            <h4>echo - Text Output</h4>
+            <div class="code-block">
+int builtin_echo(char **argv)
+{
+    int i = 1;
+    int newline = 1;
+    
+    // Handle -n flag (no newline)
+    if (argv[1] && ft_strcmp(argv[1], "-n") == 0) {
+        newline = 0;
+        i = 2;
+    }
+    
+    // Print arguments with spaces
+    while (argv[i]) {
+        printf("%s", argv[i]);
+        if (argv[i + 1])
+            printf(" ");
+        i++;
+    }
+    
+    if (newline)
+        printf("\n");
+    return 0;
+}
+            </div>
+
+            <h4>cd - Directory Navigation</h4>
+            <div class="code-block">
+int builtin_cd(char **argv, t_minishell *sh)
+{
+    char *target_dir;
+    char *old_pwd;
+    char cwd[PATH_MAX];
+    
+    // Determine target directory
+    if (!argv[1] || ft_strcmp(argv[1], "~") == 0) {
+        target_dir = env_get("HOME", sh->envp);
+    } else if (ft_strcmp(argv[1], "-") == 0) {
+        target_dir = env_get("OLDPWD", sh->envp);
+        if (target_dir)
+            printf("%s\n", target_dir);
+    } else {
+        target_dir = argv[1];
+    }
+    
+    if (!target_dir) {
+        ft_putstr_fd("cd: HOME not set\n", 2);
+        return 1;
+    }
+    
+    // Save current directory
+    if (getcwd(cwd, sizeof(cwd))) {
+        old_pwd = gc_strdup(cwd, &sh->env_gc);
+    }
+    
+    // Change directory
+    if (chdir(target_dir) != 0) {
+        perror("cd");
+        return 1;
+    }
+    
+    // Update environment variables
+    env_set("OLDPWD", old_pwd, &sh->envp, &sh->env_gc);
+    if (getcwd(cwd, sizeof(cwd))) {
+        env_set("PWD", cwd, &sh->envp, &sh->env_gc);
+    }
+    
+    return 0;
+}
+            </div>
+
+            <h4>export - Environment Variables</h4>
+            <div class="code-block">
+int builtin_export(char **argv, t_minishell *sh)
+{
+    if (!argv[1]) {
+        // Print all exported variables
+        print_sorted_env(sh->envp);
+        return 0;
+    }
+    
+    for (int i = 1; argv[i]; i++) {
+        char *key, *value;
+        
+        // Parse KEY=VALUE format
+        if (!parse_export_arg(argv[i], &key, &value)) {
+            ft_putstr_fd("export: invalid identifier\n", 2);
+            return 1;
+        }
+        
+        // Set environment variable
+        env_set(key, value, &sh->envp, &sh->env_gc);
+    }
+    
+    return 0;
+}
+            </div>
+
+            <div class="info-box">
+                <strong>🔧 Built-in Execution Context:</strong>
+                <ul>
+                    <li><strong>Direct Execution:</strong> Simple commands run in shell process</li>
+                    <li><strong>Forked Execution:</strong> Commands in pipes/logic operators run in child processes</li>
+                    <li><strong>Redirection Support:</strong> All built-ins respect I/O redirections</li>
+                    <li><strong>Exit Code Handling:</strong> Proper return values for shell logic</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="signals" class="section">
+            <h2>📡 Signal Management</h2>
+            
+            <h3>Signal Handling Strategy</h3>
+            <p>Proper signal handling is crucial for a responsive and safe shell environment.</p>
+
+            <h4>Global Signal State</h4>
+            <div class="code-block">
+/* Global flag for signal handling context */
+volatile sig_atomic_t g_in_prompt = 1;
+
+/* Signal handler for SIGINT (Ctrl+C) */
+void sigint_handler(int sig)
+{
+    (void)sig;
+    
+    if (g_in_prompt) {
+        // In prompt: show new line and redisplay prompt
+        write(1, "\n", 1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    } else {
+        // In command: just print newline
+        write(1, "\n", 1);
+    }
+}
+
+/* Setup signal handlers */
+void setup_signal_handlers(void)
+{
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, SIG_IGN);       // Ignore Ctrl+\
+    signal(SIGTSTP, SIG_IGN);       // Ignore Ctrl+Z
+}
+            </div>
+
+            <h3>Signal Context Management</h3>
+            <div class="code-block">
+int execute_simple(t_cmd *cmd, t_minishell *sh)
+{
+    pid_t pid;
+    int status;
+    
+    pid = fork();
+    if (pid == 0) {
+        // Child: Reset to default signal handlers
+        reset_signal_handlers();
+        
+        handle_redirections(cmd->redirs);
+        execve(full_path, cmd->argv, sh->envp);
+        exit(127);
+    }
+    
+    // Parent: Update signal context
+    g_in_prompt = 0;           // Not in prompt during execution
+    waitpid(pid, &status, 0);  // Wait for child
+    g_in_prompt = 1;           // Back to prompt mode
+    
+    return handle_exit_status(status);
+}
+
+void reset_signal_handlers(void)
+{
+    signal(SIGINT, SIG_DFL);   // Default SIGINT (terminate)
+    signal(SIGQUIT, SIG_DFL);  // Default SIGQUIT (core dump)
+    signal(SIGTSTP, SIG_DFL);  // Default SIGTSTP (suspend)
+}
+            </div>
+
+            <h3>Signal Behavior by Context</h3>
+            <div class="example-box">
+                <strong>📡 Signal Contexts:</strong>
+                <ul>
+                    <li><strong>Prompt Mode (g_in_prompt = 1):</strong>
+                        <ul>
+                            <li>Ctrl+C: Cancel current input, new prompt</li>
+                            <li>Ctrl+\: Ignored</li>
+                            <li>Ctrl+Z: Ignored</li>
+                        </ul>
+                    </li>
+                    <li><strong>Execution Mode (g_in_prompt = 0):</strong>
+                        <ul>
+                            <li>Ctrl+C: Print newline, child processes handle signal</li>
+                            <li>Parent shell continues after child termination</li>
+                        </ul>
+                    </li>
+                    <li><strong>Child Processes:</strong>
+                        <ul>
+                            <li>All signals reset to default behavior</li>
+                            <li>Can be terminated/suspended normally</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="memory" class="section">
+            <h2>🧠 Memory Management</h2>
+            
+            <h3>Garbage Collection System</h3>
+            <p>The minishell uses a custom <span class="highlight">garbage collector</span> to prevent memory leaks in the interactive environment.</p>
+
+            <h4>GC Structure</h4>
+            <div class="data-structure">
+typedef struct s_gc_node {
+    void                *ptr;     // Allocated memory pointer
+    struct s_gc_node    *next;    // Next allocation
+} t_gc_node;
+
+typedef struct s_gc {
+    t_gc_node *head;              // Head of allocation list
+} t_gc;
+            </div>
+
+            <h4>GC Operations</h4>
+            <div class="code-block">// Allocate and track memory
+void *gc_malloc(t_gc *gc, size_t size)
+{
+    void *ptr = malloc(size);
+    t_gc_node *node = malloc(sizeof(t_gc_node));
+    
+    node->ptr = ptr;
+    node->next = gc->head;
+    gc->head = node;
+    
+    return ptr;
+}
+
+// Free all tracked allocations
+void gc_clear(t_gc *gc)
+{
+    t_gc_node *current = gc->head;
+    while (current) {
+        t_gc_node *next = current->next;
+        free(current->ptr);
+        free(current);
+        current = next;
+    }
+    gc->head = NULL;
+}</div>
+
+            <h3>Memory Lifecycle</h3>
+            <div class="info-box">
+                <strong>🔄 Memory Phases:</strong>
+                <ol>
+                    <li><strong>Command Processing:</strong> All allocations tracked in <span class="inline-code">sh->gc</span></li>
+                    <li><strong>Environment Variables:</strong> Long-lived data in <span class="inline-code">sh->env_gc</span></li>
+                    <li><strong>Command Completion:</strong> <span class="inline-code">gc_clear(&sh->gc)</span> frees temporary memory</li>
+                    <li><strong>Shell Exit:</strong> <span class="inline-code">gc_clear(&sh->env_gc)</span> frees persistent memory</li>
+                </ol>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Memory Considerations:</strong>
+                <ul>
+                    <li><strong>No Memory Leaks:</strong> All allocations are automatically tracked and freed</li>
+                    <li><strong>Performance:</strong> GC overhead is minimal for shell operations</li>
+                    <li><strong>Safety:</strong> Double-free protection through linked list management</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="debugging" class="section">
+            <h2>🐛 Debugging & Testing</h2>
+            
+            <h3>Debug Mode System</h3>
+            <p>The minishell includes comprehensive debugging tools activated via compile-time flags.</p>
+
+            <h4>Debug Mode Activation</h4>
+            <div class="code-block">
+# Compile with debug mode
+make debug
+
+# Or manually
+cc -DDEBUG_MODE=1 -g -Wall -Wextra -Werror *.c -lreadline -o minishell
+
+# Debug output appears when DEBUG_MODE is enabled
+#ifndef DEBUG_MODE
+# define DEBUG_MODE 0
+#endif
+            </div>
+
+            <h4>Token Stream Debugging</h4>
+            <div class="code-block">
+void debug_print_tokens(t_token *tokens)
+{
+    t_token *curr = tokens;
+    int i = 0;
+    
+    printf("\n=== TOKEN STREAM DEBUG ===\n");
+    while (curr) {
+        printf("Token[%d]: ", i++);
+        printf("Type=%-12s ", get_token_type_string(curr->type));
+        printf("Value='%s' ", curr->value ? curr->value : "(null)");
+        printf("Quoted=%s\n", curr->was_quoted ? "yes" : "no");
+        curr = curr->next;
+    }
+    printf("=========================\n\n");
+}
+
+const char *get_token_type_string(t_token_type type)
+{
+    switch (type) {
+        case T_WORD:         return "WORD";
+        case T_PIPE:         return "PIPE";
+        case T_REDIR_IN:     return "REDIR_IN";
+        case T_REDIR_OUT:    return "REDIR_OUT";
+        case T_REDIR_APPEND: return "REDIR_APPEND";
+        case T_HEREDOC:      return "HEREDOC";
+        case T_AND_IF:       return "AND_IF";
+        case T_OR_IF:        return "OR_IF";
+        case T_PAREN_L:      return "PAREN_L";
+        case T_PAREN_R:      return "PAREN_R";
+        default:             return "UNKNOWN";
+    }
+}
+            </div>
+
+            <h4>AST Tree Debugging</h4>
+            <div class="code-block">
+void debug_print_ast(t_cmd_node *node)
+{
+    printf("\n=== AST DEBUG ===\n");
+    debug_print_ast_recursive(node, 0);
+    printf("================\n\n");
+}
+
+void debug_print_ast_recursive(t_cmd_node *node, int depth)
+{
+    if (!node) return;
+    
+    // Print indentation
+    for (int i = 0; i < depth; i++)
+        printf("  ");
+    
+    // Print node type and content
+    switch (node->type) {
+        case N_SIMPLE:
+            printf("SIMPLE: ");
+            if (node->cmd && node->cmd->argv) {
+                for (int i = 0; node->cmd->argv[i]; i++) {
+                    printf("%s ", node->cmd->argv[i]);
+                }
+            }
+            if (node->cmd && node->cmd->redirs) {
+                printf(" [redirections...]");
+            }
+            printf("\n");
+            break;
+            
+        case N_PIPE:
+            printf("PIPE\n");
+            debug_print_ast_recursive(node->left, depth + 1);
+            debug_print_ast_recursive(node->right, depth + 1);
+            break;
+            
+        case N_AND:
+            printf("AND\n");
+            debug_print_ast_recursive(node->left, depth + 1);
+            debug_print_ast_recursive(node->right, depth + 1);
+            break;
+            
+        case N_OR:
+            printf("OR\n");
+            debug_print_ast_recursive(node->left, depth + 1);
+            debug_print_ast_recursive(node->right, depth + 1);
+            break;
+    }
+}
+            </div>
+
+            <h3>Testing Strategies</h3>
+            <div class="info-box">
+                <strong>🧪 Testing Approaches:</strong>
+                <ul>
+                    <li><strong>Unit Testing:</strong> Individual function testing with custom inputs</li>
+                    <li><strong>Integration Testing:</strong> Full command pipeline testing</li>
+                    <li><strong>Comparison Testing:</strong> Output comparison with bash</li>
+                    <li><strong>Edge Case Testing:</strong> Error conditions and malformed input</li>
+                    <li><strong>Memory Testing:</strong> Valgrind for leak detection</li>
+                </ul>
+            </div>
+
+            <h4>Common Test Cases</h4>
+            <div class="code-block">
+# Basic functionality
+echo "hello world"
+ls -la | grep test
+echo $HOME
+
+# Complex pipelines
+find . -name "*.c" | xargs wc -l | sort -n
+
+# Logical operators
+echo "test" && echo "success" || echo "failure"
+false || echo "backup plan"
+
+# Redirections
+echo "data" > file.txt
+cat < file.txt
+cat << EOF
+multiline
+input
+EOF
+
+# Built-ins
+cd /tmp && pwd
+export TEST_VAR=value && echo $TEST_VAR
+
+# Error cases
+nonexistent_command 2>&1
+echo "test" | | echo "syntax error"
+echo "unclosed quote
+            </div>
+        </div>
+
+        <div id="performance" class="section">
+            <h2>⚡ Performance Considerations</h2>
+            
+            <h3>Memory Efficiency</h3>
+            <div class="info-box">
+                <strong>🧠 Memory Optimization Strategies:</strong>
+                <ul>
+                    <li><strong>Garbage Collection:</strong> Prevents accumulation of temporary allocations</li>
+                    <li><strong>Pool Separation:</strong> Different GC pools for temporary vs. persistent data</li>
+                    <li><strong>Pre-sizing:</strong> Calculate required buffer sizes before allocation</li>
+                    <li><strong>Reuse:</strong> Token and AST nodes allocated from same pool</li>
+                </ul>
+            </div>
+
+            <h4>Memory Usage Patterns</h4>
+            <div class="code-block">
+/* Memory allocation strategy */
+char *expand_variables(const char *input, t_minishell *sh)
+{
+    // Step 1: Calculate exact size needed (prevents realloc)
+    size_t needed_size = calculate_needed_size(input, sh);
+    
+    // Step 2: Single allocation for entire result
+    char *result = gc_malloc(&sh->gc, needed_size);
+    
+    // Step 3: Fill buffer with expanded content
+    // No additional allocations during processing
+    
+    return result;
+}
+
+/* GC cleanup timing */
+void run_shell_loop(t_minishell *sh, char *input)
+{
+    // Process command with temporary allocations
+    sh->tokens = tokenize_input(input, sh);
+    cmd_tree = parse_input(sh->tokens, sh);
+    sh->last_exit_status = execute_tree(cmd_tree, sh);
+    
+    // Single cleanup call frees all temporary memory
+    gc_clear(&sh->gc);  // O(n) where n = number of allocations
+}
+            </div>
+
+            <h3>Process Management Efficiency</h3>
+            <div class="code-block">
+/* Efficient pipe handling */
+int execute_pipe(t_cmd_node *node, t_minishell *sh)
+{
+    int pipefd[2];
+    
+    // Single pipe creation for entire pipeline
+    if (pipe(pipefd) == -1) return 1;
+    
+    // Parallel process creation (not sequential)
+    pid_t left_pid = fork();
+    if (left_pid == 0) {
+        // Left child setup and execution
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+        exit(execute_tree(node->left, sh));
+    }
+    
+    pid_t right_pid = fork();
+    if (right_pid == 0) {
+        // Right child setup and execution
+        close(pipefd[1]);
+        dup2(pipefd[0], STDIN_FILENO);
+        close(pipefd[0]);
+        exit(execute_tree(node->right, sh));
+    }
+    
+    // Parent cleanup and synchronization
+    close(pipefd[0]);
+    close(pipefd[1]);
+    
+    // Wait for both processes (order doesn't matter)
+    waitpid(left_pid, NULL, 0);
+    waitpid(right_pid, &status, 0);
+    
+    return WEXITSTATUS(status);
+}
+            </div>
+
+            <h3>Parsing Efficiency</h3>
+            <div class="code-block">
+/* Single-pass tokenization with look-ahead */
+t_token *get_next_token(const char **s, t_minishell *sh)
+{
+    // Character classification happens once
+    if (**s == '\'' || **s == '"' || !ft_strchr("|&<>() \t", **s)) {
+        // Word path (includes quotes and expansions)
+        return extract_word_token(s, sh);
+    } else {
+        // Operator path (simple character matching)
+        return extract_operator_token(s, sh);
+    }
+}
+
+/* Recursive descent parsing (O(n) where n = tokens) */
+t_cmd_node *parse_logical(t_token **curr, t_minishell *sh)
+{
+    // Each token visited exactly once
+    // No backtracking needed
+    // Left-recursive elimination for efficiency
+    
+    left = parse_pipeline(curr, sh);  // Higher precedence first
+    
+    while (*curr && is_logical_operator((*curr)->type)) {
+        // Left-associative loop (no recursion stack buildup)
+        op_type = (*curr)->type;
+        *curr = (*curr)->next;
+        right = parse_pipeline(curr, sh);
+        left = create_logic_node(left, right, op_type, sh);
+    }
+    
+    return left;
+}
+            </div>
+
+            <h3>Optimization Benchmarks</h3>
+            <div class="example-box">
+                <strong>⚡ Performance Characteristics:</strong>
+                <ul>
+                    <li><strong>Tokenization:</strong> Linear O(n) in input length</li>
+                    <li><strong>Parsing:</strong> Linear O(t) in token count</li>
+                    <li><strong>Memory:</strong> Constant overhead per command</li>
+                    <li><strong>Process Creation:</strong> Parallel where possible</li>
+                    <li><strong>GC Cleanup:</strong> Single pass, no fragmentation</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Performance Bottlenecks:</strong>
+                <ul>
+                    <li><strong>External Commands:</strong> Fork/exec overhead unavoidable</li>
+                    <li><strong>Large Pipes:</strong> Buffer size limits may cause blocking</li>
+                    <li><strong>Complex Expansions:</strong> Command substitution creates subprocesses</li>
+                    <li><strong>History:</strong> Readline library manages history size</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="examples" class="section">
+            <h2>📋 Detailed Examples</h2>
+            
+            <h3>Example 1: Simple Command with Redirection</h3>
+            <div class="example-box">
+                <strong>Command:</strong> <span class="inline-code">ls -la > files.txt 2>&1</span>
+            </div>
+            
+            <h4>Lexer Output:</h4>
+            <div class="code-block">
+[T_WORD] "ls"
+[T_WORD] "-la" 
+[T_REDIR_OUT] ">"
+[T_WORD] "files.txt"
+[T_WORD] "2>&1" (error redirection - handled specially)
+            </div>
+
+            <h4>Parser Output:</h4>
+            <div class="tree-diagram">
+N_SIMPLE
+└── cmd->argv = ["ls", "-la", NULL]
+└── cmd->redirs = [
+    {type: T_REDIR_OUT, file: "files.txt"},
+    {type: T_REDIR_ERR, file: "&1"}
+]
+            </div>
+
+            <h4>Executor Behavior:</h4>
+            <div class="code-block">
+1. Fork child process
+2. In child:
+   - open("files.txt", O_WRONLY|O_CREAT|O_TRUNC)
+   - dup2(file_fd, STDOUT_FILENO)
+   - dup2(STDOUT_FILENO, STDERR_FILENO)  // 2>&1
+   - execve("/bin/ls", ["ls", "-la"], envp)
+3. Parent waits and returns exit status
+            </div>
+
+            <h3>Example 2: Complex Pipeline with Logic</h3>
+            <div class="example-box">
+                <strong>Command:</strong> <span class="inline-code">find . -name "*.c" | xargs wc -l | sort -n && echo "Analysis complete"</span>
+            </div>
+
+            <h4>AST Structure:</h4>
+            <div class="tree-diagram">
+                 N_AND
+                /     \
+             N_PIPE   N_SIMPLE
+            /      \      |
+         N_PIPE   N_SIMPLE   echo "Analysis complete"
+        /      \      |
+   N_SIMPLE N_SIMPLE  sort -n
+      |        |
+   find ...   xargs wc -l
+            </div>
+
+            <h4>Execution Flow:</h4>
+            <div class="code-block">
+1. execute_tree(N_AND)
+2. ├─ execute_tree(N_PIPE) // Complex pipeline
+3. │  ├─ create pipe1: find → xargs
+4. │  ├─ create pipe2: xargs → sort
+5. │  ├─ fork find process (output to pipe1)
+6. │  ├─ fork xargs process (input from pipe1, output to pipe2)
+7. │  ├─ fork sort process (input from pipe2)
+8. │  └─ wait for all processes, return sort's exit status
+9. ├─ If pipeline succeeded (exit 0):
+10. └─ execute_tree(N_SIMPLE) → echo "Analysis complete"
+            </div>
+
+            <h3>Example 3: Heredoc with Variable Expansion</h3>
+            <div class="example-box">
+                <strong>Command:</strong> <span class="inline-code">cat << EOF<br>Hello $USER<br>Today is $(date)<br>EOF</span>
+            </div>
+
+            <h4>Heredoc Processing:</h4>
+            <div class="code-block">
+1. Lexer identifies << EOF as T_HEREDOC
+2. handle_heredoc("EOF", sh, 1) // expand_vars = true
+3. Read lines interactively:
+   Input: "Hello $USER"     → Expanded: "Hello john"
+   Input: "Today is $(date)" → Expanded: "Today is Mon Aug 10 2025"
+   Input: "EOF"             → Delimiter found, stop
+4. Write expanded content to pipe
+5. Return read end of pipe for stdin redirection
+            </div>
+
+            <h3>Example 4: Error Handling & Exit Codes</h3>
+            <div class="example-box">
+                <strong>Command:</strong> <span class="inline-code">nonexistent_cmd || echo "Command failed with status $?"</span>
+            </div>
+
+            <h4>Execution Trace:</h4>
+            <div class="code-block">
+1. execute_tree(N_OR)
+2. ├─ execute_tree(N_SIMPLE) → nonexistent_cmd
+3. │  ├─ resolve_command_path() fails
+4. │  ├─ write(2, "command not found\n")
+5. │  └─ return 127 (command not found)
+6. ├─ Left side failed (127 != 0), so execute right side
+7. ├─ Update sh->last_exit_status = 127
+8. └─ execute_tree(N_SIMPLE) → echo "Command failed with status 127"
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center; margin-top: 50px;">
+            <h2>🎯 Summary</h2>
+            <p>This minishell implementation demonstrates a <span class="highlight">well-architected system</span> that cleanly separates concerns across three distinct phases:</p>
+            
+            <div style="display: flex; justify-content: space-around; margin: 30px 0; flex-wrap: wrap;">
+                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 10px; flex: 1; min-width: 250px;">
+                    <h4 style="color: #27ae60;">🔤 Lexer Excellence</h4>
+                    <p>Robust tokenization with comprehensive variable expansion, quote handling, and command substitution support.</p>
+                </div>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 10px; flex: 1; min-width: 250px;">
+                    <h4 style="color: #2196f3;">🌳 Parser Precision</h4>
+                    <p>Recursive descent parsing with proper operator precedence, creating clean AST structures for complex commands.</p>
+                </div>
+                <div style="background: #fef5e7; padding: 20px; border-radius: 10px; margin: 10px; flex: 1; min-width: 250px;">
+                    <h4 style="color: #f39c12;">⚡ Executor Power</h4>
+                    <p>Efficient process management with proper pipe handling, signal management, and shell semantics compliance.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>🏆 Key Achievements:</strong>
+                <ul style="text-align: left;">
+                    <li><strong>Memory Safety:</strong> Custom garbage collector prevents leaks</li>
+                    <li><strong>Shell Compliance:</strong> Proper exit codes, signal handling, and built-ins</li>
+                    <li><strong>Feature Rich:</strong> Supports pipes, redirections, logical operators, and expansions</li>
+                    <li><strong>Maintainable:</strong> Clear separation of concerns with modular design</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 30px; font-style: italic; color: #7f8c8d;">
+                "Good architecture is like a good joke - you get it immediately." <br>
+                This minishell exemplifies clean, understandable system design. 🚀
+            </p>
+        </div>
+    </div>
+</body>
+</html>
