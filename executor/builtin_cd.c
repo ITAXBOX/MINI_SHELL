@@ -49,21 +49,6 @@ static void	handle_getcwd_failure(char *pwd_env, t_minishell *sh)
 		env_set(&sh->envp, gc_strdup("PWD=/", &sh->gc), &sh->env_gc);
 }
 
-static char	*get_current_directory(t_minishell *sh)
-{
-	char	*current_dir;
-	char	*pwd_env;
-
-	current_dir = getcwd(NULL, 0);
-	if (!current_dir)
-	{
-		pwd_env = env_get("PWD", sh->envp);
-		if (pwd_env)
-			current_dir = gc_strdup(pwd_env, &sh->gc);
-	}
-	return (current_dir);
-}
-
 static int	update_pwd_vars(char *current_dir, t_minishell *sh, int should_free)
 {
 	char	*new_dir;
@@ -89,18 +74,11 @@ static int	update_pwd_vars(char *current_dir, t_minishell *sh, int should_free)
 	return (0);
 }
 
-int	builtin_cd(char **argv, t_minishell *sh)
+static int	handle_cd_change(char **argv, t_minishell *sh
+		, char *current_dir, int is_from_getcwd)
 {
-	char	*current_dir;
 	char	*expanded_path;
-	int		is_from_getcwd;
 
-	current_dir = get_current_directory(sh);
-	if (!current_dir)
-		return (perror("cd: getcwd"), 1);
-	is_from_getcwd = (getcwd(NULL, 0) != NULL);
-	if (is_from_getcwd)
-		free(getcwd(NULL, 0));
 	expanded_path = expand_cd_path(argv[1], sh);
 	if (!expanded_path)
 	{
@@ -115,4 +93,22 @@ int	builtin_cd(char **argv, t_minishell *sh)
 		return (perror("cd: chdir"), 1);
 	}
 	return (update_pwd_vars(current_dir, sh, is_from_getcwd));
+}
+
+int	builtin_cd(char **argv, t_minishell *sh)
+{
+	char	*current_dir;
+	char	*tmp;
+	int		is_from_getcwd;
+
+	if (argv[1] && argv[2])
+		return (write(2, "cd: too many arguments\n", 23), 1);
+	current_dir = get_current_directory(sh);
+	if (!current_dir)
+		return (perror("cd: getcwd"), 1);
+	tmp = getcwd(NULL, 0);
+	is_from_getcwd = (tmp != NULL);
+	if (is_from_getcwd)
+		free(tmp);
+	return (handle_cd_change(argv, sh, current_dir, is_from_getcwd));
 }

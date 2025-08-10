@@ -47,3 +47,18 @@ char	*ft_strcat(char *dest, const char *src)
 	dest[i] = '\0';
 	return (dest);
 }
+
+char	*get_current_directory(t_minishell *sh)
+{
+	char	*current_dir;
+	char	*pwd_env;
+
+	current_dir = getcwd(NULL, 0);
+	if (!current_dir)
+	{
+		pwd_env = env_get("PWD", sh->envp);
+		if (pwd_env)
+			current_dir = gc_strdup(pwd_env, &sh->gc);
+	}
+	return (current_dir);
+}
