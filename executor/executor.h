@@ -11,7 +11,7 @@ void	execute_child_process_bin_sh(int pipefd[2], const char *cmd);
 
 int		builtin_cd(char **argv, t_minishell *sh);
 int		builtin_echo(char **argv);
-int		builtin_pwd(char **argv);
+int		builtin_pwd(char **argv, t_minishell *sh);
 int		builtin_env(t_minishell *sh);
 
 void	clean_argv(char **argv);

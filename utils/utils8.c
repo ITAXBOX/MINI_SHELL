@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+char	*expand_tilde_path(const char *path, t_minishell *sh)
+{
+	const char	*home;
+
+	home = env_get("HOME", sh->envp);
+	if (!home)
+		home = "/";
+	if (path[1] == '\0')
+		return (gc_strdup(home, &sh->gc));
+	else if (path[1] == '/')
+		return (gc_strjoin(home, path + 1, &sh->gc));
+	else
+		return (gc_strdup(path, &sh->gc));
+}
+
 char	*ft_strcpy(char *dest, const char *src)
 {
 	int	i;

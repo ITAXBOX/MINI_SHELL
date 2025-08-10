@@ -40,7 +40,21 @@ int	builtin_echo(char **argv)
 	return (0);
 }
 
-int	builtin_pwd(char **argv)
+static int	handle_pwd_fallback(t_minishell *sh)
+{
+	char	*pwd_env;
+
+	pwd_env = env_get("PWD", sh->envp);
+	if (pwd_env)
+	{
+		printf("%s\n", pwd_env);
+		return (0);
+	}
+	perror("pwd");
+	return (1);
+}
+
+int	builtin_pwd(char **argv, t_minishell *sh)
 {
 	char	*cwd;
 
@@ -58,11 +72,7 @@ int	builtin_pwd(char **argv)
 		free(cwd);
 		return (0);
 	}
-	else
-	{
-		perror("pwd");
-		return (1);
-	}
+	return (handle_pwd_fallback(sh));
 }
 
 int	builtin_env(t_minishell *sh)

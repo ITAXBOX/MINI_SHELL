@@ -45,4 +45,6 @@ void	increment_shlvl(t_minishell *sh, char ***envp);
 void	init_default_env_vars(t_minishell *sh, char ***envp);
 int		is_builtin(const char *cmd);
 
+char	*expand_tilde_path(const char *path, t_minishell *sh);
+
 #endif
