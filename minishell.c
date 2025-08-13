@@ -51,7 +51,10 @@ int	main(int argc, char **argv, char **envp)
 	{
 		input = readline(PROMPT);
 		if (!input)
+		{
+			gc_clear(&(sh.gc));
 			break ;
+		}
 		run_shell_loop(&sh, input);
 		free(input);
 	}
