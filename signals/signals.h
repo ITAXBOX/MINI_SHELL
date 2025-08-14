@@ -1,7 +1,8 @@
 #ifndef SIGNALS_H
 # define SIGNALS_H
 
-void	sigint_handler_prompt(int sig);
-void	setup_signal_handlers(void);
+void	setup_interactive_signals(void);
+void	setup_parent_wait_signals(void);
+void	setup_child_exec_signals(void);
 
 #endif

@@ -44,7 +44,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (argc != 1)
 		return (0);
-	setup_signal_handlers();
+	setup_interactive_signals();
 	init_shell(&sh, envp);
 	while (42)
 	{

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	sigint_handler_prompt(int sig)
+static void	sigint_handler_prompt(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -11,8 +11,26 @@ void	sigint_handler_prompt(int sig)
 	}
 }
 
-void	setup_signal_handlers(void)
+void	setup_interactive_signals(void)
 {
-	signal(SIGINT, sigint_handler_prompt);
+	struct sigaction	sa;
+
+	ft_memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = sigint_handler_prompt;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
+}
+
+void	setup_parent_wait_signals(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	setup_child_exec_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }

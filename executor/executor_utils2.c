@@ -42,6 +42,7 @@ static int	setup_left_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
 	int	exit_code;
 
+	setup_child_exec_signals();
 	close(pipefd[0]);
 	dup2(pipefd[1], STDOUT_FILENO);
 	close(pipefd[1]);
@@ -55,6 +56,7 @@ static int	setup_right_child(int *pipefd, t_cmd_node *node, t_minishell *sh)
 {
 	int	exit_code;
 
+	setup_child_exec_signals();
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
@@ -81,8 +83,10 @@ int	execute_pipe(t_cmd_node *node, t_minishell *sh)
 		setup_right_child(pipefd, node, sh);
 	close(pipefd[0]);
 	close(pipefd[1]);
+	setup_parent_wait_signals();
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, &status, 0);
+	setup_interactive_signals();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (handle_signal_termination(status));

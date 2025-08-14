@@ -47,5 +47,6 @@ int		is_builtin(const char *cmd);
 
 char	*expand_tilde_path(const char *path, t_minishell *sh);
 char	*get_current_directory(t_minishell *sh);
+void	*ft_memset(void *s, int c, size_t n);
 
 #endif
