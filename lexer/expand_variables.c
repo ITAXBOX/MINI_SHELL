@@ -11,42 +11,11 @@ static size_t	handle_variable_expansion(const char *input, size_t i,
 	return (i);
 }
 
-static size_t	handle_backtick_expansion(const char *input, size_t i,
-					t_expand_ctx *ctx)
-{
-	const char	*cmd_start;
-	size_t		cmd_len;
-	char		*cmd;
-
-	i++;
-	cmd_start = &input[i];
-	cmd_len = 0;
-	while (input[i] && input[i] != '`')
-	{
-		cmd_len++;
-		i++;
-	}
-	if (input[i] == '`')
-	{
-		cmd = gc_malloc(&ctx->sh->gc, cmd_len + 1);
-		ft_strncpy(cmd, cmd_start, cmd_len);
-		cmd[cmd_len] = '\0';
-		append_command_output(cmd, ctx->res, ctx->j, ctx->sh);
-		return (i + 1);
-	}
-	ctx->res[(*ctx->j)++] = '`';
-	while (cmd_len-- > 0)
-		ctx->res[(*ctx->j)++] = *cmd_start++;
-	return (i);
-}
-
 static size_t	process_expansion_char(const char *input, size_t i,
 					t_expand_ctx *ctx)
 {
 	if (input[i] == '$' && input[i + 1] && is_var_char(input[i + 1], 1))
 		return (handle_variable_expansion(input, i, ctx));
-	if (input[i] == '`')
-		return (handle_backtick_expansion(input, i, ctx));
 	ctx->res[(*ctx->j)++] = input[i++];
 	return (i);
 }

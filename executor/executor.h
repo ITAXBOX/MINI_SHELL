@@ -21,7 +21,6 @@ int		handle_signal_termination(int status);
 int		handle_heredoc(const char *delimiter, t_minishell *sh, int expand_vars);
 int		execute_pipe(t_cmd_node *node, t_minishell *sh);
 
-void	append_command_output(const char *cmd, char *res,
-			size_t *j, t_minishell *sh);
 void	handle_redirections(t_redir *redir_list);
+
 #endif

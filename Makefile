@@ -50,7 +50,6 @@ SRCS		= minishell.c \
 			  $(EXECUTEDIR)/builtins.c \
 			  $(EXECUTEDIR)/builtins_functions.c \
 			  $(EXECUTEDIR)/builtin_cd.c \
-			  $(EXECUTEDIR)/execute_command.c \
 			  $(EXECUTEDIR)/handle_redirections.c \
 			  $(DEBUGDIR)/debugging_tools_1.c \
 			  $(DEBUGDIR)/debugging_tools_2.c \
