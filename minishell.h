@@ -31,9 +31,6 @@
 #  define DEBUG_MODE 0
 # endif
 
-/* ───── Global Variable ───── */
-extern int	g_in_prompt;
-
 /* ───── Minishell Context Struct ───── */
 typedef struct s_minishell
 {

@@ -3,6 +3,5 @@
 
 void	sigint_handler_prompt(int sig);
 void	setup_signal_handlers(void);
-void	reset_signal_handlers(void);
 
 #endif

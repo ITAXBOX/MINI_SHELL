@@ -9,16 +9,13 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 	pid = fork();
 	if (pid == 0)
 	{
-		reset_signal_handlers();
 		handle_redirections(cmd->redirs);
 		exit_code = run_builtin(cmd, sh);
 		gc_clear(&sh->gc);
 		gc_clear(&sh->env_gc);
 		exit(exit_code);
 	}
-	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
-	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (handle_signal_termination(status));
@@ -26,7 +23,6 @@ int	fork_and_execute_builtin(t_cmd *cmd, t_minishell *sh)
 
 static void	execute_child_process(t_cmd *cmd, t_minishell *sh, char *full_path)
 {
-	reset_signal_handlers();
 	handle_redirections(cmd->redirs);
 	execve(full_path, cmd->argv, sh->envp);
 	perror("execve");
@@ -47,15 +43,12 @@ static int	handle_empty_command(t_cmd *cmd, t_minishell *sh)
 	pid = fork();
 	if (pid == 0)
 	{
-		reset_signal_handlers();
 		handle_redirections(cmd->redirs);
 		gc_clear(&sh->gc);
 		gc_clear(&sh->env_gc);
 		exit(0);
 	}
-	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
-	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (handle_signal_termination(status));
@@ -81,9 +74,7 @@ static int	execute_simple(t_cmd *cmd, t_minishell *sh)
 	pid = fork();
 	if (pid == 0)
 		execute_child_process(cmd, sh, full_path);
-	g_in_prompt = 0;
 	waitpid(pid, &status, 0);
-	g_in_prompt = 1;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (handle_signal_termination(status));
