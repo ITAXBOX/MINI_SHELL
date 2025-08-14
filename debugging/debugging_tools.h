@@ -3,7 +3,6 @@
 
 # include "minishell.h"
 
-/* Enhanced debug visualizations */
 void	debug_print_ast(t_cmd_node *node);
 void	debug_print_tokens(t_token *token);
 

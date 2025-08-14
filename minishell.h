@@ -32,7 +32,7 @@
 # endif
 
 /* ───── Global Variable ───── */
-extern volatile sig_atomic_t	g_in_prompt;
+extern int	g_in_prompt;
 
 /* ───── Minishell Context Struct ───── */
 typedef struct s_minishell

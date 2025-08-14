@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-volatile sig_atomic_t	g_in_prompt = 1;
+int	g_in_prompt = 1;
 
 void	sigint_handler_prompt(int sig)
 {
