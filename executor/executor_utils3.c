@@ -32,7 +32,7 @@ int	execute_expanded_command(const char *cmd_str, t_minishell *sh)
 	if (!input_copy)
 		return (1);
 	tokens = tokenize_input(input_copy, sh);
-	if (!tokens || !validate_token_stream(tokens, sh))
+	if (!tokens || !validate_token_stream(tokens))
 		return (1);
 	cmd_tree = parse_input(tokens, sh);
 	if (!cmd_tree)

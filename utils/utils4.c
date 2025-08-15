@@ -54,12 +54,12 @@ int	match_pattern(const char *pattern, const char *text)
 	return (*text == '\0');
 }
 
-void	syntax_error(const char *token, t_minishell *sh)
+void	syntax_error(const char *token)
 {
 	write(2, "minishell: syntax error near unexpected token `", 48);
 	write(2, token, ft_strlen(token));
 	write(2, "'\n", 2);
-	sh->last_exit_status = 2;
+	g_exit_status = 2;
 }
 
 int	is_valid_identifier(const char *s)

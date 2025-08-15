@@ -66,32 +66,32 @@ void	print_sorted_env_export(char **envp, t_gc *gc)
 }
 
 static int	check_syntax_errors(t_token *token, t_token *prev
-	, int *paren_count, t_minishell *sh)
+	, int *paren_count)
 {
 	if ((token->type == T_AND_IF || token->type == T_OR_IF
 			|| token->type == T_PIPE)
 		&& (!prev || !token->next || prev->type == token->type
 			|| token->next->type == token->type))
-		return (syntax_error(token->value, sh), 0);
+		return (syntax_error(token->value), 0);
 	if (token->type == T_PAREN_L)
 		(*paren_count)++;
 	else if (token->type == T_PAREN_R)
 		(*paren_count)--;
 	if (*paren_count < 0)
-		return (syntax_error(")", sh), 0);
+		return (syntax_error(")"), 0);
 	if ((token->type >= T_REDIR_IN && token->type <= T_HEREDOC)
 		&& (!token->next || token->next->type != T_WORD))
 	{
 		if (token->next)
-			syntax_error(token->next->value, sh);
+			syntax_error(token->next->value);
 		else
-			syntax_error("newline", sh);
+			syntax_error("newline");
 		return (0);
 	}
 	return (1);
 }
 
-int	validate_token_stream(t_token *token, t_minishell *sh)
+int	validate_token_stream(t_token *token)
 {
 	t_token	*prev;
 	int		paren_count;
@@ -102,14 +102,14 @@ int	validate_token_stream(t_token *token, t_minishell *sh)
 		return (0);
 	while (token)
 	{
-		if (!check_syntax_errors(token, prev, &paren_count, sh))
+		if (!check_syntax_errors(token, prev, &paren_count))
 			return (0);
 		prev = token;
 		token = token->next;
 	}
 	if (paren_count != 0)
 	{
-		syntax_error(")", sh);
+		syntax_error(")");
 		return (0);
 	}
 	return (1);

@@ -23,13 +23,13 @@ char	*ft_strdup(const char *s);
 int		ft_strcmp(const char *s1, const char *s2);
 
 void	print_sorted_env_export(char **envp, t_gc *gc);
-int		validate_token_stream(t_token *token, t_minishell *sh);
+int		validate_token_stream(t_token *token);
 
 int		is_only_whitespace(const char *s);
 char	**resize_argv(char **old_argv, size_t old_size,
 			size_t new_capacity, t_minishell *sh);
 int		match_pattern(const char *pattern, const char *text);
-void	syntax_error(const char *token, t_minishell *sh);
+void	syntax_error(const char *token);
 int		is_valid_identifier(const char *s);
 
 int		execute_builtin_dispatch(t_cmd *cmd, t_minishell *sh);

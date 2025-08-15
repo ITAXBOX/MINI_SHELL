@@ -14,7 +14,7 @@ static void	env_unset(char **envp, const char *key)
 	}
 }
 
-static int	builtin_exit(char **argv, t_minishell *sh)
+static int	builtin_exit(char **argv)
 {
 	int	exit_code;
 
@@ -36,7 +36,7 @@ static int	builtin_exit(char **argv, t_minishell *sh)
 			exit_code += 256;
 	}
 	else
-		exit_code = sh->last_exit_status;
+		exit_code = g_exit_status;
 	exit(exit_code);
 }
 
@@ -96,6 +96,6 @@ int	run_builtin(t_cmd *cmd, t_minishell *sh)
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
 		return (builtin_unset(cmd->argv, sh));
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return (builtin_exit(cmd->argv, sh));
+		return (builtin_exit(cmd->argv));
 	return (1);
 }

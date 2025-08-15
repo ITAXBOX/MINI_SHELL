@@ -1,11 +1,12 @@
 #include "minishell.h"
 
+int	g_exit_status = 0;
+
 static void	init_shell(t_minishell *sh, char **envp)
 {
 	sh->gc.head = NULL;
 	sh->env_gc.head = NULL;
 	sh->tokens = NULL;
-	sh->last_exit_status = 0;
 	sh->in_logical_or_pipe = 0;
 	sh->envp = copy_envp(envp, &sh->env_gc);
 	increment_shlvl(sh, &sh->envp);
@@ -19,7 +20,7 @@ static void	run_shell_loop(t_minishell *sh, char *input)
 	if (*input && !is_only_whitespace(input))
 		add_history(input);
 	sh->tokens = tokenize_input(input, sh);
-	if (!sh->tokens || !validate_token_stream(sh->tokens, sh))
+	if (!sh->tokens || !validate_token_stream(sh->tokens))
 	{
 		gc_clear(&sh->gc);
 		return ;
@@ -31,7 +32,7 @@ static void	run_shell_loop(t_minishell *sh, char *input)
 	{
 		if (DEBUG_MODE)
 			debug_print_ast(cmd_tree);
-		sh->last_exit_status = execute_tree(cmd_tree, sh);
+		g_exit_status = execute_tree(cmd_tree, sh);
 	}
 	gc_clear(&sh->gc);
 }

@@ -31,13 +31,15 @@
 #  define DEBUG_MODE 0
 # endif
 
+/* ───── Global Variables ───── */
+extern int	g_exit_status;
+
 /* ───── Minishell Context Struct ───── */
 typedef struct s_minishell
 {
 	t_gc		gc;
 	t_gc		env_gc;
 	t_token		*tokens;
-	int			last_exit_status;
 	char		**envp;
 	int			in_logical_or_pipe;
 }	t_minishell;
