@@ -10,7 +10,7 @@ int		execute_tree(t_cmd_node *node, t_minishell *sh);
 
 int		builtin_cd(char **argv, t_minishell *sh);
 int		builtin_echo(char **argv);
-int		builtin_pwd(char **argv, t_minishell *sh);
+int		builtin_pwd(t_minishell *sh);
 int		builtin_env(t_minishell *sh);
 
 void	clean_argv(char **argv);
