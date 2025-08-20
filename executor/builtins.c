@@ -68,11 +68,16 @@ int	builtin_pwd(t_minishell *sh)
 	return (handle_pwd_fallback(sh));
 }
 
-int	builtin_env(t_minishell *sh)
+int	builtin_env(char **argv, t_minishell *sh)
 {
 	int	i;
 
 	i = 0;
+	if (argv[1])
+	{
+		printf("env: '%s': No such file or directory\n", argv[1]);
+		return (127);
+	}
 	while (sh->envp[i])
 	{
 		printf("%s\n", sh->envp[i]);
