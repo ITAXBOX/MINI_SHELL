@@ -28,6 +28,7 @@ void	setup_parent_wait_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
 
 void	setup_child_exec_signals(void)
